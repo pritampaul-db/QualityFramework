@@ -1,0 +1,16 @@
+product_id,product_name,sku,price,category,stock_quantity,supplier,created_at
+P001,Wireless Mouse,ELC-1234,29.99,electronics,500,TechCorp,2026-01-01
+P002,Running Shoes,SPT-5678,89.99,sports,200,NikeCo,2026-01-15
+P003,,BKS-9012,15.99,books,1000,BookWorld,2026-02-01
+P004,Organic Coffee,FOD-3456,12.50,food,300,FarmFresh,2026-02-15
+P005,Standing Desk,FRN-7890,449.99,furniture,50,OfficePro,2026-03-01
+P006,Smart Watch,ELC-2345,299.99,electronics,150,TechCorp,2026-03-05
+P007,Yoga Mat,SPT-6789,-19.99,sports,400,FitGear,2026-03-10
+P008,Building Blocks,TOY-1234,24.99,toys,600,ToyCo,2026-03-12
+P009,Winter Jacket,CLT-4567,129.99,clothing,100,FashionHub,2026-03-15
+P010,Mystery Novel,INVALID_SKU,9.99,books,800,BookWorld,2026-03-18
+P011,Premium Steak,FOD-8901,150000.00,food,20,MeatKing,2026-03-20
+P012,Gaming Chair,FRN-2345,349.99,gaming,75,OfficePro,2026-03-22
+P013,Tennis Racket,SPT-3456,79.99,sports,90,FitGear,2026-03-25
+P014,LED TV,ELC-1234,599.99,electronics,30,TechCorp,2026-03-28
+P015,Cookbook,BKS-5678,22.99,books,250,BookWorld,2026-03-30

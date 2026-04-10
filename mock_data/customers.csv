@@ -1,0 +1,17 @@
+customer_id,customer_name,email,age,phone,status,country_code,created_at
+C001,John Smith,john.smith@example.com,35,1234567890,active,US,2026-01-15
+C002,Jane Doe,jane.doe@example.com,28,9876543210,active,UK,2026-01-20
+C003,Bob Johnson,bob.johnson@example.com,45,5551234567,inactive,CA,2026-02-01
+C004,,missing.name@example.com,30,4445556666,active,US,2026-02-10
+C005,Alice Brown,invalid-email-format,25,7778889999,active,DE,2026-02-15
+C006,Charlie Wilson,charlie@example.com,150,1112223333,suspended,FR,2026-02-20
+C007,Diana Prince,diana@example.com,42,,active,XX,2026-03-01
+C008,Eve Adams,,38,3334445555,active,US,2026-03-05
+C009,Frank Castle,frank@example.com,17,6667778888,active,UK,2026-03-10
+C010,Grace Lee,grace@example.com,55,12345,pending,JP,2026-03-15
+C011,Henry Ford,henry@example.com,62,9998887777,deleted,US,2026-03-18
+C012,Ivy Chen,ivy@example.com,29,8887776666,active,CN,2026-03-20
+C013,Jack Ryan,jack@example.com,-5,7776665555,active,AU,2026-03-22
+C014,Karen White,karen@@double.com,41,6665554444,active,US,2026-03-25
+C015,Leo Messi,leo@example.com,38,5554443333123456,active,AR,2026-03-28
+C001,John Smith Duplicate,john.dup@example.com,35,1234567890,active,US,2026-03-30

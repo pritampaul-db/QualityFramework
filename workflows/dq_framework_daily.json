@@ -1,0 +1,113 @@
+{
+  "name": "dq_framework_daily",
+  "description": "Daily execution of the Metadata-Driven DQ Framework",
+  "schedule": {
+    "quartz_cron_expression": "0 0 6 * * ?",
+    "timezone_id": "UTC"
+  },
+  "tasks": [
+    {
+      "task_key": "extract_rules",
+      "description": "Extract DQ rules from Collibra and load into Delta tables",
+      "notebook_task": {
+        "notebook_path": "/Repos/<user>/Quality_Framework/notebooks/01_extract_rules"
+      },
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 0,
+        "spark_conf": {
+          "spark.master": "local[*]"
+        }
+      },
+      "timeout_seconds": 600,
+      "max_retries": 1
+    },
+    {
+      "task_key": "execute_dq_bronze_to_silver",
+      "description": "Execute DQ rules during Bronze to Silver transition",
+      "depends_on": [
+        {"task_key": "extract_rules"}
+      ],
+      "notebook_task": {
+        "notebook_path": "/Repos/<user>/Quality_Framework/notebooks/02_execute_dq"
+      },
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 2,
+        "autoscale": {
+          "min_workers": 1,
+          "max_workers": 4
+        }
+      },
+      "timeout_seconds": 1800,
+      "max_retries": 1
+    },
+    {
+      "task_key": "build_gold_layer",
+      "description": "Build Gold layer tables from validated Silver data",
+      "depends_on": [
+        {"task_key": "execute_dq_bronze_to_silver"}
+      ],
+      "notebook_task": {
+        "notebook_path": "/Repos/<user>/Quality_Framework/notebooks/03_build_gold"
+      },
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 2
+      },
+      "timeout_seconds": 1200,
+      "max_retries": 1
+    },
+    {
+      "task_key": "generate_reports",
+      "description": "Generate DQ dashboard reports",
+      "depends_on": [
+        {"task_key": "build_gold_layer"}
+      ],
+      "notebook_task": {
+        "notebook_path": "/Repos/<user>/Quality_Framework/notebooks/04_dq_dashboards"
+      },
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 0,
+        "spark_conf": {
+          "spark.master": "local[*]"
+        }
+      },
+      "timeout_seconds": 600,
+      "max_retries": 0
+    },
+    {
+      "task_key": "feedback_to_collibra",
+      "description": "Push DQ results back to Collibra",
+      "depends_on": [
+        {"task_key": "generate_reports"}
+      ],
+      "notebook_task": {
+        "notebook_path": "/Repos/<user>/Quality_Framework/notebooks/05_feedback_loop"
+      },
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 0,
+        "spark_conf": {
+          "spark.master": "local[*]"
+        }
+      },
+      "timeout_seconds": 600,
+      "max_retries": 1
+    }
+  ],
+  "email_notifications": {
+    "on_failure": ["dq-framework-alerts@example.com"]
+  },
+  "tags": {
+    "team": "data-quality",
+    "env": "poc",
+    "framework": "dq-metadata-driven"
+  }
+}

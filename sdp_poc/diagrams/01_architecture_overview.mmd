@@ -1,0 +1,59 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "secondaryColor": "#F5F5F5", "tertiaryColor": "#FAFAFA", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "14px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}}%%
+flowchart TD
+    subgraph GOV["  GOVERNANCE LAYER  "]
+        COL["Collibra  ·  mock JSON\n─────────────────────────────────\n20 DQ Rules                    20 Rule Mappings"]
+    end
+
+    LOAD(["Loaded at DLT import time"])
+
+    subgraph RE["  RULE ENGINE  —  embedded in DLT  "]
+        REB["RuleExpressionBuilder\nRule dict  →  SQL boolean expression"]
+        RLE["RowLevelEvaluator\nSQL expressions  →  _dq struct per row"]
+        REB --> RLE
+    end
+
+    APPLY(["Applied during pipeline execution"])
+
+    subgraph DLT["  DLT PIPELINE  "]
+        direction LR
+        BRZ["BRONZE\n──────────────────\nRaw data ingestion\n_lineage struct\n4 tables"]
+        SLV["SILVER\n──────────────────\nDQ evaluation\n_dq struct\nclean / quarantine split\n9 tables and views"]
+        GLD["GOLD\n──────────────────\nExploded detail\nAggregates\nBusiness tables\n7 tables"]
+        BRZ -->|"bronze → silver"| SLV
+        SLV -->|"silver → gold"| GLD
+    end
+
+    subgraph OBS["  OBSERVABILITY LAYER  "]
+        direction LR
+        WF["Daily Workflow"]
+        EVTLOG["DLT Event Log"]
+        DASH["Lakeview AI/BI Dashboard\n4 pages · 20 widgets"]
+        WF --- EVTLOG --- DASH
+    end
+
+    GOV --> LOAD
+    LOAD --> RE
+    RE --> APPLY
+    APPLY --> DLT
+    DLT --> OBS
+
+    classDef govNode    fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef reNode     fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef bronzeNode fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#E65100
+    classDef silverNode fill:#F5F5F5,stroke:#616161,stroke-width:2px,color:#212121
+    classDef goldNode   fill:#FFFDE7,stroke:#F9A825,stroke-width:2px,color:#F57F17
+    classDef obsNode    fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    classDef transNode  fill:#ECEFF1,stroke:#90A4AE,stroke-width:1px,color:#546E7A
+
+    class COL govNode
+    class REB,RLE reNode
+    class BRZ bronzeNode
+    class SLV silverNode
+    class GLD goldNode
+    class DASH,EVTLOG,WF obsNode
+    class LOAD,APPLY transNode
+
+    style GOV fill:#E8F0FE,stroke:#1565C0,stroke-width:3px,color:#1565C0,font-weight:bold
+    style RE  fill:#E6F4EA,stroke:#2E7D32,stroke-width:3px,color:#2E7D32,font-weight:bold
+    style DLT fill:#FEF7E0,stroke:#F57F17,stroke-width:3px,color:#E65100,font-weight:bold
+    style OBS fill:#F3E8F9,stroke:#7B1FA2,stroke-width:3px,color:#7B1FA2,font-weight:bold

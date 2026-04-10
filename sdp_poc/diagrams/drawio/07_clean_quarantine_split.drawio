@@ -1,0 +1,68 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T07:30:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="Clean Quarantine Split" id="clean-quar">
+    <mxGraphModel dx="1400" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="input" value="&lt;b&gt;customers_validated&lt;/b&gt;&lt;br&gt;17 rows — each row carries _dq struct&lt;br&gt;(rule_id · passed · enforcement · details)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="400" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="classify-group" value="Rule Classification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;strokeWidth=2;fontColor=#333333;fontStyle=1;fontSize=13;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="110" width="800" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="hard" value="&lt;b&gt;Hard Rules — Gate Keepers&lt;/b&gt;&lt;hr&gt;DQR-000001 · not_null · email&lt;br&gt;DQR-000002 · not_null · name&lt;br&gt;DQR-000003 · range · age (18-120)&lt;br&gt;DQR-000004 · regex · email format&lt;br&gt;DQR-000006 · allowed_values · status&lt;br&gt;DQR-000007 · uniqueness · customer_id" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;fontColor=#B71C1C;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="classify-group">
+          <mxGeometry x="20" y="30" width="370" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="soft" value="&lt;b&gt;Soft Rules — Monitors Only&lt;/b&gt;&lt;hr&gt;DQR-000005 · length · phone&lt;br&gt;DQR-000008 · ref_integrity · country_code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontColor=#E65100;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="classify-group">
+          <mxGeometry x="410" y="30" width="370" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="decision" value="ALL hard rules pass?&lt;br&gt;&lt;i&gt;(_dq.enforcement = 'hard'&lt;br&gt;AND _dq.passed = false)&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=3;fontColor=#4A148C;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="320" y="300" width="260" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="clean-group" value="CLEAN PATH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#2E7D32;strokeWidth=3;fontColor=#2E7D32;fontStyle=1;fontSize=13;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="450" width="350" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="clean-node" value="&lt;b&gt;customers_clean&lt;/b&gt;&lt;br&gt;All hard-enforcement rules passed&lt;br&gt;Soft failures flagged but retained" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="clean-group">
+          <mxGeometry x="25" y="30" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="gold-node" value="&lt;b&gt;gold_customer_360&lt;/b&gt;&lt;br&gt;Production gold layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;strokeWidth=2;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="clean-group">
+          <mxGeometry x="50" y="100" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="cn-gn" style="strokeColor=#2E7D32;" edge="1" source="clean-node" target="gold-node" parent="clean-group"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="quar-group" value="QUARANTINE PATH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#C62828;strokeWidth=3;fontColor=#C62828;fontStyle=1;fontSize=13;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="500" y="450" width="350" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="quar-node" value="&lt;b&gt;customers_quarantine&lt;/b&gt;&lt;br&gt;At least one hard-enforcement rule failed&lt;br&gt;Held for review and remediation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;strokeWidth=2;fontColor=#B71C1C;fontSize=11;" vertex="1" parent="quar-group">
+          <mxGeometry x="25" y="30" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash-node" value="&lt;b&gt;Quarantine Zone Dashboard&lt;/b&gt;&lt;br&gt;DQ Ops monitoring and triage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;fontColor=#B71C1C;fontSize=11;" vertex="1" parent="quar-group">
+          <mxGeometry x="50" y="100" width="250" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="qn-dn" style="strokeColor=#C62828;" edge="1" source="quar-node" target="dash-node" parent="quar-group"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="ex-group" value="Row-Level Examples" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;fontColor=#333333;fontStyle=1;fontSize=13;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="650" width="700" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="ex1" value="&lt;b&gt;C001&lt;/b&gt; — all rules pass → &lt;b&gt;CLEAN&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="ex-group">
+          <mxGeometry x="20" y="30" width="650" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="ex2" value="&lt;b&gt;C006&lt;/b&gt; — age=150, fails DQR-000003 hard rule → &lt;b&gt;QUARANTINE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;fontColor=#B71C1C;fontSize=11;" vertex="1" parent="ex-group">
+          <mxGeometry x="20" y="65" width="650" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="ex3" value="&lt;b&gt;C007&lt;/b&gt; — country=XX, fails DQR-000008 soft rule only → &lt;b&gt;CLEAN&lt;/b&gt; (soft failure does not quarantine)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="ex-group">
+          <mxGeometry x="20" y="100" width="650" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="in-cl" style="strokeColor=#757575;strokeWidth=2;" edge="1" source="input" target="classify-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="cl-dec" style="strokeColor=#757575;strokeWidth=2;" edge="1" source="classify-group" target="decision" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="dec-clean" value="YES — no hard failures" style="strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontColor=#2E7D32;" edge="1" source="decision" target="clean-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="dec-quar" value="NO — hard failure detected" style="strokeColor=#C62828;strokeWidth=2;fontSize=10;fontColor=#C62828;" edge="1" source="decision" target="quar-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,130 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "13px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}}%%
+flowchart TD
+    subgraph SRC["SOURCE DATA  (CSV Files)"]
+        direction LR
+        S1["customers.csv\n17 rows"]
+        S2["transactions.csv\n16 rows"]
+        S3["products.csv\n15 rows"]
+        S4["dim_country.csv\n12 rows"]
+    end
+
+    subgraph BRONZE["BRONZE LAYER  -  sdp_bronze_sources.py"]
+        direction LR
+        B1["customers_bronze\n+ _lineage"]
+        B2["transactions_bronze\n+ _lineage"]
+        B3["products_bronze\n+ _lineage"]
+        B4["ref_dim_country\n+ _lineage"]
+    end
+
+    subgraph SILVER["SILVER LAYER  -  sdp_dq_pipeline.py"]
+        direction TB
+
+        subgraph DQ_C["Customers DQ"]
+            direction TB
+            DQE_C["DQ Engine\n8 rules evaluated per row"]
+            CV["customers_validated\n+ _dq struct + _lineage"]
+            CC["customers_clean\nall hard rules pass"]
+            CQ["customers_quarantine\nany hard rule fails"]
+            DQE_C --> CV
+            CV --> CC
+            CV --> CQ
+        end
+
+        subgraph DQ_T["Transactions DQ"]
+            direction TB
+            DQE_T["DQ Engine\n8 rules evaluated per row"]
+            TV["transactions_validated\n+ _dq struct + _lineage"]
+            TC["transactions_clean\nall hard rules pass"]
+            TQ["transactions_quarantine\nany hard rule fails"]
+            DQE_T --> TV
+            TV --> TC
+            TV --> TQ
+        end
+
+        subgraph DQ_P["Products DQ"]
+            direction TB
+            DQE_P["DQ Engine\n8 rules evaluated per row"]
+            PV["products_validated\n+ _dq struct + _lineage"]
+            PC["products_clean\nall hard rules pass"]
+            PQ["products_quarantine\nany hard rule fails"]
+            DQE_P --> PV
+            PV --> PC
+            PV --> PQ
+        end
+    end
+
+    subgraph GOLD["GOLD LAYER  -  sdp_gold_pipeline.py"]
+        direction TB
+
+        subgraph EXPLODE["Explode Path"]
+            direction TB
+            RLD_C["dq_row_level_detail_customers"]
+            RLD_T["dq_row_level_detail_transactions"]
+            RLD_P["dq_row_level_detail_products"]
+            RLD_ALL["dq_row_level_detail_all\nunion of all datasets"]
+            RLD_C & RLD_T & RLD_P --> RLD_ALL
+        end
+
+        subgraph AGG["Aggregate Path"]
+            direction LR
+            SUM_DS["dq_summary_by_dataset"]
+            SUM_RULE["dq_summary_by_rule"]
+        end
+
+        subgraph BIZ["Business Path"]
+            direction LR
+            C360["gold_customer_360"]
+            PCAT["gold_product_catalog"]
+        end
+    end
+
+    S1 --> B1
+    S2 --> B2
+    S3 --> B3
+    S4 --> B4
+
+    B1 --> DQE_C
+    B2 --> DQE_T
+    B3 --> DQE_P
+
+    CV --> RLD_C
+    TV --> RLD_T
+    PV --> RLD_P
+
+    RLD_ALL --> SUM_DS
+    RLD_ALL --> SUM_RULE
+
+    CC --> C360
+    TC --> C360
+    PC --> PCAT
+
+    classDef srcStyle    fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    classDef bronzeStyle fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#E65100,font-weight:bold
+    classDef engineStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C,font-weight:bold
+    classDef validStyle  fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef cleanStyle  fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef quarStyle   fill:#FFCDD2,stroke:#C62828,stroke-width:2px,color:#B71C1C,font-weight:bold
+    classDef explStyle   fill:#E8EAF6,stroke:#3F51B5,stroke-width:2px,color:#1A237E,font-weight:bold
+    classDef aggStyle    fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    classDef bizStyle    fill:#FCE4EC,stroke:#C62828,stroke-width:2px,color:#880E4F,font-weight:bold
+
+    class S1,S2,S3,S4 srcStyle
+    class B1,B2,B3,B4 bronzeStyle
+    class DQE_C,DQE_T,DQE_P engineStyle
+    class CV,TV,PV validStyle
+    class CC,TC,PC cleanStyle
+    class CQ,TQ,PQ quarStyle
+    class RLD_C,RLD_T,RLD_P,RLD_ALL explStyle
+    class SUM_DS,SUM_RULE aggStyle
+    class C360,PCAT bizStyle
+
+    style SRC    fill:#F5F9FF,stroke:#1565C0,stroke-width:3px,color:#1565C0
+    style BRONZE fill:#FFFBF0,stroke:#F57F17,stroke-width:3px,color:#E65100
+    style SILVER fill:#F1F8E9,stroke:#2E7D32,stroke-width:3px,color:#1B5E20
+    style GOLD   fill:#FFF5F5,stroke:#C62828,stroke-width:3px,color:#880E4F
+    style DQ_C   fill:#F9FBF9,stroke:#43A047,stroke-width:2px
+    style DQ_T   fill:#F9FBF9,stroke:#43A047,stroke-width:2px
+    style DQ_P   fill:#F9FBF9,stroke:#43A047,stroke-width:2px
+    style EXPLODE fill:#F5F5FA,stroke:#3F51B5,stroke-width:2px
+    style AGG    fill:#F5F9FF,stroke:#1565C0,stroke-width:2px
+    style BIZ    fill:#FFF5F8,stroke:#C62828,stroke-width:2px

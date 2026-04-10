@@ -1,0 +1,86 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T07:30:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="Architecture Overview" id="arch-overview">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="gov-group" value="GOVERNANCE LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#1565C0;strokeWidth=3;fontColor=#1565C0;fontStyle=1;fontSize=14;verticalAlign=top;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="700" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="collibra" value="&lt;b&gt;Collibra · mock JSON&lt;/b&gt;&lt;br&gt;20 DQ Rules &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 20 Rule Mappings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="gov-group">
+          <mxGeometry x="150" y="30" width="400" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="load-trans" value="Loaded at DLT import time" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;strokeWidth=1;fontColor=#546E7A;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="340" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="re-group" value="RULE ENGINE — embedded in DLT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#2E7D32;strokeWidth=3;fontColor=#2E7D32;fontStyle=1;fontSize=14;verticalAlign=top;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="180" width="700" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="reb" value="&lt;b&gt;RuleExpressionBuilder&lt;/b&gt;&lt;br&gt;Rule dict → SQL boolean expression" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="re-group">
+          <mxGeometry x="40" y="30" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="rle" value="&lt;b&gt;RowLevelEvaluator&lt;/b&gt;&lt;br&gt;SQL expressions → _dq struct per row" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="re-group">
+          <mxGeometry x="380" y="30" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="reb-to-rle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;" edge="1" source="reb" target="rle" parent="re-group">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="apply-trans" value="Applied during pipeline execution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;strokeWidth=1;fontColor=#546E7A;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="290" width="340" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="dlt-group" value="DLT PIPELINE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#F57F17;strokeWidth=3;fontColor=#E65100;fontStyle=1;fontSize=14;verticalAlign=top;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="340" width="900" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="bronze" value="&lt;b&gt;BRONZE&lt;/b&gt;&lt;br&gt;Raw data ingestion&lt;br&gt;_lineage struct&lt;br&gt;4 tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontColor=#E65100;fontSize=11;" vertex="1" parent="dlt-group">
+          <mxGeometry x="40" y="30" width="240" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="silver" value="&lt;b&gt;SILVER&lt;/b&gt;&lt;br&gt;DQ evaluation · _dq struct&lt;br&gt;clean / quarantine split&lt;br&gt;9 tables and views" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#616161;strokeWidth=2;fontColor=#212121;fontSize=11;" vertex="1" parent="dlt-group">
+          <mxGeometry x="330" y="30" width="240" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="gold" value="&lt;b&gt;GOLD&lt;/b&gt;&lt;br&gt;Exploded detail&lt;br&gt;Aggregates · Business tables&lt;br&gt;7 tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;strokeWidth=2;fontColor=#F57F17;fontSize=11;" vertex="1" parent="dlt-group">
+          <mxGeometry x="620" y="30" width="240" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="b-to-s" value="bronze → silver" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;fontSize=10;fontColor=#757575;" edge="1" source="bronze" target="silver" parent="dlt-group">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s-to-g" value="silver → gold" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;fontSize=10;fontColor=#757575;" edge="1" source="silver" target="gold" parent="dlt-group">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="obs-group" value="OBSERVABILITY LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8F9;strokeColor=#7B1FA2;strokeWidth=3;fontColor=#7B1FA2;fontStyle=1;fontSize=14;verticalAlign=top;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="480" width="800" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="wf" value="&lt;b&gt;Daily Workflow&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;fontColor=#4A148C;fontSize=11;" vertex="1" parent="obs-group">
+          <mxGeometry x="40" y="30" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="evtlog" value="&lt;b&gt;DLT Event Log&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;fontColor=#4A148C;fontSize=11;" vertex="1" parent="obs-group">
+          <mxGeometry x="290" y="30" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash" value="&lt;b&gt;Lakeview AI/BI Dashboard&lt;/b&gt;&lt;br&gt;4 pages · 20 widgets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;fontColor=#4A148C;fontSize=11;" vertex="1" parent="obs-group">
+          <mxGeometry x="540" y="30" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="gov-to-load" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=2;" edge="1" source="gov-group" target="load-trans" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="load-to-re" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=2;" edge="1" source="load-trans" target="re-group" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="re-to-apply" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=2;" edge="1" source="re-group" target="apply-trans" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="apply-to-dlt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=2;" edge="1" source="apply-trans" target="dlt-group" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="dlt-to-obs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=2;" edge="1" source="dlt-group" target="obs-group" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

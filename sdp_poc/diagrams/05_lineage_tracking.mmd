@@ -1,0 +1,76 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "secondaryColor": "#F5F5F5", "tertiaryColor": "#FAFAFA", "background": "#FFFFFF", "mainBkg": "#FFFFFF", "nodeBorder": "#BDBDBD", "clusterBkg": "#FAFAFA", "titleColor": "#333333", "edgeLabelBackground": "#FFFFFF", "fontFamily": "Arial, sans-serif"}}}%%
+flowchart LR
+    classDef bronzeHeader fill:#FFF8E1,stroke:#F9A825,color:#333333,font-weight:bold,font-size:14px
+    classDef silverHeader fill:#ECEFF1,stroke:#90A4AE,color:#333333,font-weight:bold,font-size:14px
+    classDef goldHeader fill:#FFF3E0,stroke:#FFB300,color:#333333,font-weight:bold,font-size:14px
+    classDef filled fill:#E8F5E9,stroke:#A5D6A7,color:#1B5E20,font-size:11px
+    classDef nullField fill:#FFEBEE,stroke:#EF9A9A,color:#B71C1C,font-size:11px
+    classDef newFilled fill:#C8E6C9,stroke:#66BB6A,color:#1B5E20,font-weight:bold,font-size:11px
+    classDef stageLabel fill:#E3F2FD,stroke:#90CAF9,color:#0D47A1,font-weight:bold,font-size:15px
+
+    subgraph BRONZE["  BRONZE LAYER  "]
+        direction TB
+        B_HDR["_lineage struct"]:::bronzeHeader
+        B1["source.file_name: 'customers.csv'  ✅"]:::filled
+        B2["source.file_path: '/Volumes/dq_poc/...'  ✅"]:::filled
+        B3["source.format: 'csv'  ✅"]:::filled
+        B4["bronze.table: 'customers_bronze'  ✅"]:::filled
+        B5["bronze.ingested_at: '2026-04-07T06:00:00Z'  ✅"]:::filled
+        B6["silver.table: NULL  ❌"]:::nullField
+        B7["silver.validated_at: NULL  ❌"]:::nullField
+        B8["gold.table: NULL  ❌"]:::nullField
+        B9["gold.processed_at: NULL  ❌"]:::nullField
+        B10["pipeline.name: 'DQ Framework - SDP Pipeline'  ✅"]:::filled
+
+        B_HDR --> B1
+        B1 --> B2
+        B2 --> B3
+        B3 --> B4
+        B4 --> B5
+        B5 --> B6
+        B6 --> B7
+        B7 --> B8
+        B8 --> B9
+        B9 --> B10
+    end
+
+    subgraph SILVER["  SILVER LAYER  "]
+        direction TB
+        S_HDR["_lineage struct"]:::silverHeader
+        S1["source.*  ✅  (inherited)"]:::filled
+        S2["bronze.*  ✅  (inherited)"]:::filled
+        S3["silver.table: 'customers_validated'  ✅"]:::newFilled
+        S4["silver.validated_at: '2026-04-07T06:00:05Z'  ✅"]:::newFilled
+        S5["gold.table: NULL  ❌"]:::nullField
+        S6["gold.processed_at: NULL  ❌"]:::nullField
+        S7["pipeline.name  ✅  (inherited)"]:::filled
+
+        S_HDR --> S1
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+        S4 --> S5
+        S5 --> S6
+        S6 --> S7
+    end
+
+    subgraph GOLD["  GOLD LAYER  "]
+        direction TB
+        G_HDR["_lineage struct"]:::goldHeader
+        G1["source.*  ✅  (inherited)"]:::filled
+        G2["bronze.*  ✅  (inherited)"]:::filled
+        G3["silver.*  ✅  (inherited)"]:::filled
+        G4["gold.table: 'gold_customer_360'  ✅"]:::newFilled
+        G5["gold.processed_at: '2026-04-07T06:00:10Z'  ✅"]:::newFilled
+        G6["pipeline.name  ✅  (inherited)"]:::filled
+
+        G_HDR --> G1
+        G1 --> G2
+        G2 --> G3
+        G3 --> G4
+        G4 --> G5
+        G5 --> G6
+    end
+
+    BRONZE --"DLT pipeline\npropagates struct"--> SILVER
+    SILVER --"DLT pipeline\nenriches struct"--> GOLD

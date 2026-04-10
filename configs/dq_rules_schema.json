@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DQ Rule Schema",
+  "description": "Schema for validating data quality rule definitions from Collibra",
+  "type": "object",
+  "required": ["rule_id", "rule_type", "column", "severity"],
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "pattern": "^DQR-[0-9]{6}$",
+      "description": "Unique rule identifier"
+    },
+    "rule_name": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "not_null",
+        "range",
+        "regex",
+        "uniqueness",
+        "referential_integrity",
+        "allowed_values",
+        "length",
+        "freshness",
+        "custom_sql"
+      ]
+    },
+    "column": {
+      "type": "string",
+      "minLength": 1
+    },
+    "params": {
+      "type": "object",
+      "description": "Rule-type-specific parameters"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["error", "warning", "info"]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": ["string", "null"],
+      "format": "date"
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"rule_type": {"const": "range"}}},
+      "then": {"properties": {"params": {"required": ["min", "max"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "regex"}}},
+      "then": {"properties": {"params": {"required": ["pattern"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "allowed_values"}}},
+      "then": {"properties": {"params": {"required": ["values"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "length"}}},
+      "then": {"properties": {"params": {"required": ["min_length", "max_length"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "referential_integrity"}}},
+      "then": {"properties": {"params": {"required": ["ref_table", "ref_column"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "freshness"}}},
+      "then": {"properties": {"params": {"required": ["max_age_hours"]}}}
+    },
+    {
+      "if": {"properties": {"rule_type": {"const": "custom_sql"}}},
+      "then": {"properties": {"params": {"required": ["sql_expression"]}}}
+    }
+  ]
+}

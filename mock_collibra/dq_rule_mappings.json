@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "source": "collibra_mock",
+    "extracted_at": "2026-04-01T10:00:00Z"
+  },
+  "mappings": [
+    {"mapping_id": "MAP-001", "dataset_name": "bronze.customers", "column_name": "email", "rule_id": "DQR-000001", "enforcement_mode": "hard", "priority": 1, "is_active": true},
+    {"mapping_id": "MAP-002", "dataset_name": "bronze.customers", "column_name": "customer_name", "rule_id": "DQR-000002", "enforcement_mode": "hard", "priority": 2, "is_active": true},
+    {"mapping_id": "MAP-003", "dataset_name": "bronze.customers", "column_name": "age", "rule_id": "DQR-000003", "enforcement_mode": "soft", "priority": 3, "is_active": true},
+    {"mapping_id": "MAP-004", "dataset_name": "bronze.customers", "column_name": "email", "rule_id": "DQR-000004", "enforcement_mode": "soft", "priority": 4, "is_active": true},
+    {"mapping_id": "MAP-005", "dataset_name": "bronze.customers", "column_name": "phone", "rule_id": "DQR-000005", "enforcement_mode": "soft", "priority": 5, "is_active": true},
+    {"mapping_id": "MAP-006", "dataset_name": "bronze.customers", "column_name": "status", "rule_id": "DQR-000006", "enforcement_mode": "hard", "priority": 6, "is_active": true},
+    {"mapping_id": "MAP-007", "dataset_name": "bronze.customers", "column_name": "customer_id", "rule_id": "DQR-000007", "enforcement_mode": "hard", "priority": 7, "is_active": true},
+    {"mapping_id": "MAP-008", "dataset_name": "bronze.customers", "column_name": "country_code", "rule_id": "DQR-000008", "enforcement_mode": "soft", "priority": 8, "is_active": true},
+    {"mapping_id": "MAP-009", "dataset_name": "bronze.transactions", "column_name": "amount", "rule_id": "DQR-000009", "enforcement_mode": "hard", "priority": 1, "is_active": true},
+    {"mapping_id": "MAP-010", "dataset_name": "bronze.transactions", "column_name": "amount", "rule_id": "DQR-000010", "enforcement_mode": "hard", "priority": 2, "is_active": true},
+    {"mapping_id": "MAP-011", "dataset_name": "bronze.transactions", "column_name": "transaction_type", "rule_id": "DQR-000011", "enforcement_mode": "hard", "priority": 3, "is_active": true},
+    {"mapping_id": "MAP-012", "dataset_name": "bronze.transactions", "column_name": "transaction_date", "rule_id": "DQR-000012", "enforcement_mode": "hard", "priority": 4, "is_active": true},
+    {"mapping_id": "MAP-013", "dataset_name": "bronze.transactions", "column_name": "customer_id", "rule_id": "DQR-000013", "enforcement_mode": "soft", "priority": 5, "is_active": true},
+    {"mapping_id": "MAP-014", "dataset_name": "bronze.transactions", "column_name": "transaction_date", "rule_id": "DQR-000014", "enforcement_mode": "soft", "priority": 6, "is_active": true},
+    {"mapping_id": "MAP-015", "dataset_name": "bronze.transactions", "column_name": "quantity", "rule_id": "DQR-000015", "enforcement_mode": "soft", "priority": 7, "is_active": true},
+    {"mapping_id": "MAP-016", "dataset_name": "bronze.products", "column_name": "product_name", "rule_id": "DQR-000016", "enforcement_mode": "hard", "priority": 1, "is_active": true},
+    {"mapping_id": "MAP-017", "dataset_name": "bronze.products", "column_name": "price", "rule_id": "DQR-000017", "enforcement_mode": "hard", "priority": 2, "is_active": true},
+    {"mapping_id": "MAP-018", "dataset_name": "bronze.products", "column_name": "category", "rule_id": "DQR-000018", "enforcement_mode": "soft", "priority": 3, "is_active": true},
+    {"mapping_id": "MAP-019", "dataset_name": "bronze.products", "column_name": "sku", "rule_id": "DQR-000019", "enforcement_mode": "soft", "priority": 4, "is_active": true},
+    {"mapping_id": "MAP-020", "dataset_name": "bronze.products", "column_name": "sku", "rule_id": "DQR-000020", "enforcement_mode": "hard", "priority": 5, "is_active": true}
+  ]
+}

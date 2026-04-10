@@ -1,0 +1,633 @@
+{
+  "displayName": "Data Quality Command Center — SDP Framework",
+  "warehouse_id": "{{WAREHOUSE_ID}}",
+  "datasets": [
+    {
+      "name": "ds_overall_dq_score",
+      "displayName": "Overall DQ Score",
+      "query": "SELECT\n  ROUND(AVG(pass_rate_pct), 1) AS overall_dq_score\nFROM dq_poc.silver.dq_summary_by_dataset"
+    },
+    {
+      "name": "ds_total_records_evaluated",
+      "displayName": "Total Records Evaluated",
+      "query": "SELECT\n  SUM(total_records) AS total_records\nFROM dq_poc.silver.dq_summary_by_dataset"
+    },
+    {
+      "name": "ds_total_rules_active",
+      "displayName": "Total Active Rules",
+      "query": "SELECT\n  COUNT(DISTINCT rule_id) AS total_rules\nFROM dq_poc.silver.dq_summary_by_rule"
+    },
+    {
+      "name": "ds_total_failures",
+      "displayName": "Total Rule Failures",
+      "query": "SELECT\n  SUM(failed_count) AS total_failures\nFROM dq_poc.silver.dq_summary_by_rule"
+    },
+    {
+      "name": "ds_dq_by_dataset",
+      "displayName": "DQ Summary by Dataset",
+      "query": "SELECT\n  dataset_name,\n  total_records,\n  fully_clean_records,\n  total_records - fully_clean_records AS impacted_records,\n  pass_rate_pct,\n  avg_row_score,\n  total_evaluations,\n  ROUND(fully_clean_records * 100.0 / total_records, 1) AS clean_pct\nFROM dq_poc.silver.dq_summary_by_dataset\nORDER BY pass_rate_pct ASC"
+    },
+    {
+      "name": "ds_clean_vs_quarantine",
+      "displayName": "Clean vs Quarantine",
+      "query": "SELECT 'customers' AS dataset,\n  (SELECT COUNT(*) FROM dq_poc.silver.customers_clean) AS clean_rows,\n  (SELECT COUNT(*) FROM dq_poc.silver.customers_quarantine) AS quarantine_rows,\n  (SELECT COUNT(*) FROM dq_poc.silver.customers_validated) AS total_rows\nUNION ALL\nSELECT 'transactions',\n  (SELECT COUNT(*) FROM dq_poc.silver.transactions_clean),\n  (SELECT COUNT(*) FROM dq_poc.silver.transactions_quarantine),\n  (SELECT COUNT(*) FROM dq_poc.silver.transactions_validated)\nUNION ALL\nSELECT 'products',\n  (SELECT COUNT(*) FROM dq_poc.silver.products_clean),\n  (SELECT COUNT(*) FROM dq_poc.silver.products_quarantine),\n  (SELECT COUNT(*) FROM dq_poc.silver.products_validated)"
+    },
+    {
+      "name": "ds_score_distribution",
+      "displayName": "Row DQ Score Distribution",
+      "query": "SELECT score_bucket, dataset, SUM(row_count) AS row_count FROM (\n  SELECT\n    CASE\n      WHEN _dq_row_score = 100 THEN '1 - Perfect (100%)'\n      WHEN _dq_row_score >= 80 THEN '2 - Good (80-99%)'\n      WHEN _dq_row_score >= 60 THEN '3 - Fair (60-79%)'\n      WHEN _dq_row_score >= 40 THEN '4 - Poor (40-59%)'\n      ELSE '5 - Critical (< 40%)'\n    END AS score_bucket,\n    'customers' AS dataset,\n    1 AS row_count\n  FROM dq_poc.silver.customers_validated\n  UNION ALL\n  SELECT\n    CASE\n      WHEN _dq_row_score = 100 THEN '1 - Perfect (100%)'\n      WHEN _dq_row_score >= 80 THEN '2 - Good (80-99%)'\n      WHEN _dq_row_score >= 60 THEN '3 - Fair (60-79%)'\n      WHEN _dq_row_score >= 40 THEN '4 - Poor (40-59%)'\n      ELSE '5 - Critical (< 40%)'\n    END AS score_bucket,\n    'transactions' AS dataset,\n    1 AS row_count\n  FROM dq_poc.silver.transactions_validated\n  UNION ALL\n  SELECT\n    CASE\n      WHEN _dq_row_score = 100 THEN '1 - Perfect (100%)'\n      WHEN _dq_row_score >= 80 THEN '2 - Good (80-99%)'\n      WHEN _dq_row_score >= 60 THEN '3 - Fair (60-79%)'\n      WHEN _dq_row_score >= 40 THEN '4 - Poor (40-59%)'\n      ELSE '5 - Critical (< 40%)'\n    END AS score_bucket,\n    'products' AS dataset,\n    1 AS row_count\n  FROM dq_poc.silver.products_validated\n) GROUP BY score_bucket, dataset\nORDER BY score_bucket"
+    },
+    {
+      "name": "ds_rule_pass_rate",
+      "displayName": "Rule Pass Rates",
+      "query": "SELECT\n  r.rule_id,\n  r.dataset_name,\n  r.total_records,\n  r.passed_count,\n  r.failed_count,\n  r.pass_rate_pct,\n  CASE\n    WHEN r.pass_rate_pct >= 95 THEN 'Healthy'\n    WHEN r.pass_rate_pct >= 80 THEN 'Warning'\n    ELSE 'Critical'\n  END AS health_status\nFROM dq_poc.silver.dq_summary_by_rule r\nORDER BY r.pass_rate_pct ASC"
+    },
+    {
+      "name": "ds_rule_health_heatmap",
+      "displayName": "Rule Health Heatmap",
+      "query": "SELECT\n  dataset_name,\n  rule_id,\n  pass_rate_pct,\n  failed_count,\n  CASE\n    WHEN pass_rate_pct >= 95 THEN 'GREEN'\n    WHEN pass_rate_pct >= 80 THEN 'AMBER'\n    ELSE 'RED'\n  END AS health_status\nFROM dq_poc.silver.dq_summary_by_rule\nORDER BY dataset_name, pass_rate_pct ASC"
+    },
+    {
+      "name": "ds_top_failing_rows_customers",
+      "displayName": "Top Failing Customer Rows",
+      "query": "SELECT\n  customer_id,\n  customer_name,\n  email,\n  age,\n  status,\n  _dq_failed_count,\n  _dq_passed_count,\n  _dq_total_rules,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _dq_evaluated_at\nFROM dq_poc.silver.customers_validated\nWHERE _dq_all_passed = false\nORDER BY _dq_row_score ASC\nLIMIT 50"
+    },
+    {
+      "name": "ds_top_failing_rows_transactions",
+      "displayName": "Top Failing Transaction Rows",
+      "query": "SELECT\n  transaction_id,\n  customer_id,\n  amount,\n  transaction_type,\n  transaction_date,\n  _dq_failed_count,\n  _dq_passed_count,\n  _dq_total_rules,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _dq_evaluated_at\nFROM dq_poc.silver.transactions_validated\nWHERE _dq_all_passed = false\nORDER BY _dq_row_score ASC\nLIMIT 50"
+    },
+    {
+      "name": "ds_top_failing_rows_products",
+      "displayName": "Top Failing Product Rows",
+      "query": "SELECT\n  product_id,\n  product_name,\n  sku,\n  category,\n  price,\n  _dq_failed_count,\n  _dq_passed_count,\n  _dq_total_rules,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _dq_evaluated_at\nFROM dq_poc.silver.products_validated\nWHERE _dq_all_passed = false\nORDER BY _dq_row_score ASC\nLIMIT 50"
+    },
+    {
+      "name": "ds_quarantine_customers",
+      "displayName": "Quarantined Customers",
+      "query": "SELECT\n  customer_id,\n  customer_name,\n  email,\n  _dq_failed_count,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _quarantine_reason,\n  _quarantined_at\nFROM dq_poc.silver.customers_quarantine\nORDER BY _dq_row_score ASC"
+    },
+    {
+      "name": "ds_quarantine_transactions",
+      "displayName": "Quarantined Transactions",
+      "query": "SELECT\n  transaction_id,\n  customer_id,\n  amount,\n  transaction_type,\n  _dq_failed_count,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _quarantine_reason,\n  _quarantined_at\nFROM dq_poc.silver.transactions_quarantine\nORDER BY _dq_row_score ASC"
+    },
+    {
+      "name": "ds_quarantine_products",
+      "displayName": "Quarantined Products",
+      "query": "SELECT\n  product_id,\n  product_name,\n  sku,\n  _dq_failed_count,\n  _dq_row_score,\n  CONCAT_WS(', ', _dq_failed_rules) AS failed_rules,\n  _quarantine_reason,\n  _quarantined_at\nFROM dq_poc.silver.products_quarantine\nORDER BY _dq_row_score ASC"
+    },
+    {
+      "name": "ds_all_rule_detail",
+      "displayName": "All Row-Level Rule Detail",
+      "query": "SELECT\n  dataset_name,\n  primary_key_value,\n  rule_id,\n  passed,\n  _dq_row_score,\n  _dq_all_passed,\n  evaluated_at\nFROM dq_poc.silver.dq_row_level_detail_all"
+    },
+    {
+      "name": "ds_failure_by_rule_type",
+      "displayName": "Failures by Rule Type",
+      "query": "SELECT\n  CASE\n    WHEN rule_id LIKE '%not_null%' OR rule_id IN ('DQR-000001','DQR-000002','DQR-000009','DQR-000012','DQR-000016') THEN 'Not Null'\n    WHEN rule_id IN ('DQR-000003','DQR-000010','DQR-000017') THEN 'Range'\n    WHEN rule_id IN ('DQR-000004','DQR-000019') THEN 'Regex/Format'\n    WHEN rule_id IN ('DQR-000005') THEN 'Length'\n    WHEN rule_id IN ('DQR-000006','DQR-000011','DQR-000018') THEN 'Allowed Values'\n    WHEN rule_id IN ('DQR-000007','DQR-000020') THEN 'Uniqueness'\n    WHEN rule_id IN ('DQR-000008','DQR-000013') THEN 'Referential Integrity'\n    WHEN rule_id IN ('DQR-000014') THEN 'Freshness'\n    WHEN rule_id IN ('DQR-000015') THEN 'Custom SQL'\n    ELSE 'Other'\n  END AS rule_type,\n  COUNT(*) AS total_evaluations,\n  SUM(CASE WHEN passed THEN 1 ELSE 0 END) AS passed_count,\n  SUM(CASE WHEN NOT passed THEN 1 ELSE 0 END) AS failed_count,\n  ROUND(SUM(CASE WHEN passed THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS pass_rate_pct\nFROM dq_poc.silver.dq_row_level_detail_all\nGROUP BY 1\nORDER BY pass_rate_pct ASC"
+    },
+    {
+      "name": "ds_severity_breakdown",
+      "displayName": "DQ by Severity",
+      "query": "SELECT\n  dataset_name,\n  rule_id,\n  pass_rate_pct,\n  failed_count,\n  CASE\n    WHEN rule_id IN ('DQR-000001','DQR-000002','DQR-000003','DQR-000004','DQR-000006','DQR-000007','DQR-000009','DQR-000010','DQR-000011','DQR-000012','DQR-000013','DQR-000016','DQR-000017','DQR-000020') THEN 'error'\n    ELSE 'warning'\n  END AS severity\nFROM dq_poc.silver.dq_summary_by_rule\nORDER BY severity, pass_rate_pct ASC"
+    },
+    {
+      "name": "ds_dq_score_by_dataset_avg",
+      "displayName": "Average Row Score by Dataset",
+      "query": "SELECT 'customers' AS dataset, ROUND(AVG(_dq_row_score), 2) AS avg_score, MIN(_dq_row_score) AS min_score, MAX(_dq_row_score) AS max_score, COUNT(*) AS total_rows FROM dq_poc.silver.customers_validated\nUNION ALL\nSELECT 'transactions', ROUND(AVG(_dq_row_score), 2), MIN(_dq_row_score), MAX(_dq_row_score), COUNT(*) FROM dq_poc.silver.transactions_validated\nUNION ALL\nSELECT 'products', ROUND(AVG(_dq_row_score), 2), MIN(_dq_row_score), MAX(_dq_row_score), COUNT(*) FROM dq_poc.silver.products_validated"
+    }
+  ],
+  "pages": [
+    {
+      "name": "page_executive_overview",
+      "displayName": "Executive Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "w_overall_score",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 0, "width": 1, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_total_records",
+            "textbox_spec": ""
+          },
+          "position": {"x": 1, "y": 0, "width": 1, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_total_rules",
+            "textbox_spec": ""
+          },
+          "position": {"x": 2, "y": 0, "width": 1, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_total_failures",
+            "textbox_spec": ""
+          },
+          "position": {"x": 3, "y": 0, "width": 1, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_title_overview",
+            "textbox_spec": "## Data Quality Command Center\nMetadata-driven DQ framework powered by Spark Declarative Pipelines with row-level rule evaluation"
+          },
+          "position": {"x": 4, "y": 0, "width": 2, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_dq_by_dataset_bar",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 1, "width": 3, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_clean_vs_quarantine",
+            "textbox_spec": ""
+          },
+          "position": {"x": 3, "y": 1, "width": 3, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_score_distribution",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 3, "width": 3, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_dataset_score_summary",
+            "textbox_spec": ""
+          },
+          "position": {"x": 3, "y": 3, "width": 3, "height": 2}
+        }
+      ]
+    },
+    {
+      "name": "page_rule_analysis",
+      "displayName": "Rule Analysis",
+      "layout": [
+        {
+          "widget": {
+            "name": "w_rule_title",
+            "textbox_spec": "## Rule-Level Analysis\nPer-rule pass rates, health status, and failure patterns across all datasets"
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_rule_pass_rate_bar",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 1, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_rule_health_table",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 3, "width": 3, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_failure_by_rule_type",
+            "textbox_spec": ""
+          },
+          "position": {"x": 3, "y": 3, "width": 3, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_severity_breakdown",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 5, "width": 6, "height": 2}
+        }
+      ]
+    },
+    {
+      "name": "page_row_level_detail",
+      "displayName": "Row-Level DQ Detail",
+      "layout": [
+        {
+          "widget": {
+            "name": "w_row_title",
+            "textbox_spec": "## Row-Level DQ Results\nPer-row, per-rule pass/fail traceability — drill into exactly which rules failed for each record"
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_failing_customers_table",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 1, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_failing_transactions_table",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 3, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_failing_products_table",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 5, "width": 6, "height": 2}
+        }
+      ]
+    },
+    {
+      "name": "page_quarantine",
+      "displayName": "Quarantine Zone",
+      "layout": [
+        {
+          "widget": {
+            "name": "w_quarantine_title",
+            "textbox_spec": "## Quarantine Zone\nRecords dropped by hard-enforcement rules — review for remediation or root cause analysis"
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "w_quarantine_customers",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 1, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_quarantine_transactions",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 3, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "w_quarantine_products",
+            "textbox_spec": ""
+          },
+          "position": {"x": 0, "y": 5, "width": 6, "height": 2}
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "name": "w_overall_score",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_overall_dq_score", "disaggregated": false, "fields": [{"name": "overall_dq_score", "expression": "`overall_dq_score`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "counter",
+        "encodings": {
+          "value": {"fieldName": "overall_dq_score", "displayName": "Overall DQ Score (%)"}
+        }
+      }
+    },
+    {
+      "name": "w_total_records",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_total_records_evaluated", "disaggregated": false, "fields": [{"name": "total_records", "expression": "`total_records`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "counter",
+        "encodings": {
+          "value": {"fieldName": "total_records", "displayName": "Records Evaluated"}
+        }
+      }
+    },
+    {
+      "name": "w_total_rules",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_total_rules_active", "disaggregated": false, "fields": [{"name": "total_rules", "expression": "`total_rules`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "counter",
+        "encodings": {
+          "value": {"fieldName": "total_rules", "displayName": "Active Rules"}
+        }
+      }
+    },
+    {
+      "name": "w_total_failures",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_total_failures", "disaggregated": false, "fields": [{"name": "total_failures", "expression": "`total_failures`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "counter",
+        "encodings": {
+          "value": {"fieldName": "total_failures", "displayName": "Total Rule Failures"}
+        }
+      }
+    },
+    {
+      "name": "w_dq_by_dataset_bar",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_dq_by_dataset", "disaggregated": false, "fields": [{"name": "dataset_name", "expression": "`dataset_name`"}, {"name": "pass_rate_pct", "expression": "`pass_rate_pct`"}, {"name": "avg_row_score", "expression": "`avg_row_score`"}, {"name": "clean_pct", "expression": "`clean_pct`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "bar",
+        "encodings": {
+          "x": {"fieldName": "dataset_name", "scale": {"type": "categorical"}, "displayName": "Dataset"},
+          "y": {"fieldName": "pass_rate_pct", "scale": {"type": "quantitative"}, "displayName": "Rule Pass Rate (%)"},
+          "color": {"fieldName": "dataset_name", "scale": {"type": "categorical"}, "displayName": "Dataset"},
+          "label": {"show": true}
+        },
+        "frame": {
+          "title": "DQ Pass Rate by Dataset",
+          "showDescription": true,
+          "description": "Percentage of individual rule evaluations that passed per dataset"
+        }
+      }
+    },
+    {
+      "name": "w_clean_vs_quarantine",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_clean_vs_quarantine", "disaggregated": false, "fields": [{"name": "dataset", "expression": "`dataset`"}, {"name": "clean_rows", "expression": "`clean_rows`"}, {"name": "quarantine_rows", "expression": "`quarantine_rows`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "bar",
+        "encodings": {
+          "x": {"fieldName": "dataset", "scale": {"type": "categorical"}, "displayName": "Dataset"},
+          "y": {"fieldName": "clean_rows", "scale": {"type": "quantitative"}, "displayName": "Rows"},
+          "color": {"fieldName": "dataset", "scale": {"type": "categorical"}},
+          "label": {"show": true}
+        },
+        "frame": {
+          "title": "Clean vs Quarantined Rows",
+          "showDescription": true,
+          "description": "Records passing all hard-enforcement rules vs quarantined"
+        }
+      }
+    },
+    {
+      "name": "w_score_distribution",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_score_distribution", "disaggregated": false, "fields": [{"name": "score_bucket", "expression": "`score_bucket`"}, {"name": "row_count", "expression": "`row_count`"}, {"name": "dataset", "expression": "`dataset`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "bar",
+        "encodings": {
+          "x": {"fieldName": "score_bucket", "scale": {"type": "categorical"}, "displayName": "DQ Score Range"},
+          "y": {"fieldName": "row_count", "scale": {"type": "quantitative"}, "displayName": "Row Count"},
+          "color": {"fieldName": "dataset", "scale": {"type": "categorical"}, "displayName": "Dataset"},
+          "label": {"show": true}
+        },
+        "frame": {
+          "title": "Row-Level DQ Score Distribution",
+          "showDescription": true,
+          "description": "Distribution of per-row DQ scores across all datasets"
+        }
+      }
+    },
+    {
+      "name": "w_dataset_score_summary",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_dq_score_by_dataset_avg", "disaggregated": false, "fields": [{"name": "dataset", "expression": "`dataset`"}, {"name": "avg_score", "expression": "`avg_score`"}, {"name": "min_score", "expression": "`min_score`"}, {"name": "max_score", "expression": "`max_score`"}, {"name": "total_rows", "expression": "`total_rows`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "dataset", "displayName": "Dataset"},
+            {"fieldName": "avg_score", "displayName": "Avg DQ Score"},
+            {"fieldName": "min_score", "displayName": "Min Score"},
+            {"fieldName": "max_score", "displayName": "Max Score"},
+            {"fieldName": "total_rows", "displayName": "Total Rows"}
+          ]
+        },
+        "frame": {
+          "title": "Dataset DQ Score Summary",
+          "showDescription": true,
+          "description": "Average, minimum, and maximum per-row DQ scores by dataset"
+        }
+      }
+    },
+    {
+      "name": "w_rule_pass_rate_bar",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_rule_pass_rate", "disaggregated": false, "fields": [{"name": "rule_id", "expression": "`rule_id`"}, {"name": "pass_rate_pct", "expression": "`pass_rate_pct`"}, {"name": "dataset_name", "expression": "`dataset_name`"}, {"name": "health_status", "expression": "`health_status`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "bar",
+        "encodings": {
+          "x": {"fieldName": "pass_rate_pct", "scale": {"type": "quantitative"}, "displayName": "Pass Rate (%)"},
+          "y": {"fieldName": "rule_id", "scale": {"type": "categorical"}, "displayName": "Rule ID"},
+          "color": {"fieldName": "health_status", "scale": {"type": "categorical"}, "displayName": "Health"},
+          "label": {"show": true}
+        },
+        "frame": {
+          "title": "Pass Rate by Rule",
+          "showDescription": true,
+          "description": "Horizontal bar chart showing pass rate per rule — sorted worst to best"
+        }
+      }
+    },
+    {
+      "name": "w_rule_health_table",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_rule_health_heatmap", "disaggregated": false, "fields": [{"name": "dataset_name", "expression": "`dataset_name`"}, {"name": "rule_id", "expression": "`rule_id`"}, {"name": "pass_rate_pct", "expression": "`pass_rate_pct`"}, {"name": "failed_count", "expression": "`failed_count`"}, {"name": "health_status", "expression": "`health_status`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "dataset_name", "displayName": "Dataset"},
+            {"fieldName": "rule_id", "displayName": "Rule ID"},
+            {"fieldName": "pass_rate_pct", "displayName": "Pass Rate %"},
+            {"fieldName": "failed_count", "displayName": "Failures"},
+            {"fieldName": "health_status", "displayName": "Health"}
+          ]
+        },
+        "frame": {
+          "title": "Rule Health Matrix",
+          "showDescription": true,
+          "description": "GREEN (>=95%), AMBER (80-95%), RED (<80%)"
+        }
+      }
+    },
+    {
+      "name": "w_failure_by_rule_type",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_failure_by_rule_type", "disaggregated": false, "fields": [{"name": "rule_type", "expression": "`rule_type`"}, {"name": "pass_rate_pct", "expression": "`pass_rate_pct`"}, {"name": "failed_count", "expression": "`failed_count`"}, {"name": "total_evaluations", "expression": "`total_evaluations`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "bar",
+        "encodings": {
+          "x": {"fieldName": "rule_type", "scale": {"type": "categorical"}, "displayName": "Rule Type"},
+          "y": {"fieldName": "failed_count", "scale": {"type": "quantitative"}, "displayName": "Failure Count"},
+          "color": {"fieldName": "rule_type", "scale": {"type": "categorical"}, "displayName": "Rule Type"},
+          "label": {"show": true}
+        },
+        "frame": {
+          "title": "Failures by Rule Type",
+          "showDescription": true,
+          "description": "Which types of DQ rules are causing the most failures"
+        }
+      }
+    },
+    {
+      "name": "w_severity_breakdown",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_severity_breakdown", "disaggregated": false, "fields": [{"name": "dataset_name", "expression": "`dataset_name`"}, {"name": "rule_id", "expression": "`rule_id`"}, {"name": "pass_rate_pct", "expression": "`pass_rate_pct`"}, {"name": "failed_count", "expression": "`failed_count`"}, {"name": "severity", "expression": "`severity`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "severity", "displayName": "Severity"},
+            {"fieldName": "dataset_name", "displayName": "Dataset"},
+            {"fieldName": "rule_id", "displayName": "Rule ID"},
+            {"fieldName": "pass_rate_pct", "displayName": "Pass Rate %"},
+            {"fieldName": "failed_count", "displayName": "Failures"}
+          ]
+        },
+        "frame": {
+          "title": "Rules by Severity",
+          "showDescription": true,
+          "description": "Error-severity rules vs Warning-severity rules and their failure rates"
+        }
+      }
+    },
+    {
+      "name": "w_failing_customers_table",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_top_failing_rows_customers", "disaggregated": false, "fields": [{"name": "customer_id", "expression": "`customer_id`"}, {"name": "customer_name", "expression": "`customer_name`"}, {"name": "email", "expression": "`email`"}, {"name": "age", "expression": "`age`"}, {"name": "status", "expression": "`status`"}, {"name": "_dq_failed_count", "expression": "`_dq_failed_count`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "customer_id", "displayName": "Customer ID"},
+            {"fieldName": "customer_name", "displayName": "Name"},
+            {"fieldName": "email", "displayName": "Email"},
+            {"fieldName": "age", "displayName": "Age"},
+            {"fieldName": "status", "displayName": "Status"},
+            {"fieldName": "_dq_failed_count", "displayName": "Failed Rules"},
+            {"fieldName": "_dq_row_score", "displayName": "Row DQ Score"},
+            {"fieldName": "failed_rules", "displayName": "Which Rules Failed"}
+          ]
+        },
+        "frame": {
+          "title": "Customers — Failing Rows (Worst First)",
+          "showDescription": true,
+          "description": "Customer records that failed one or more DQ rules, with per-row scores and failed rule IDs"
+        }
+      }
+    },
+    {
+      "name": "w_failing_transactions_table",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_top_failing_rows_transactions", "disaggregated": false, "fields": [{"name": "transaction_id", "expression": "`transaction_id`"}, {"name": "customer_id", "expression": "`customer_id`"}, {"name": "amount", "expression": "`amount`"}, {"name": "transaction_type", "expression": "`transaction_type`"}, {"name": "_dq_failed_count", "expression": "`_dq_failed_count`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "transaction_id", "displayName": "Txn ID"},
+            {"fieldName": "customer_id", "displayName": "Customer"},
+            {"fieldName": "amount", "displayName": "Amount"},
+            {"fieldName": "transaction_type", "displayName": "Type"},
+            {"fieldName": "_dq_failed_count", "displayName": "Failed Rules"},
+            {"fieldName": "_dq_row_score", "displayName": "Row DQ Score"},
+            {"fieldName": "failed_rules", "displayName": "Which Rules Failed"}
+          ]
+        },
+        "frame": {
+          "title": "Transactions — Failing Rows (Worst First)",
+          "showDescription": true,
+          "description": "Transaction records that failed DQ rules, sorted by worst DQ score"
+        }
+      }
+    },
+    {
+      "name": "w_failing_products_table",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_top_failing_rows_products", "disaggregated": false, "fields": [{"name": "product_id", "expression": "`product_id`"}, {"name": "product_name", "expression": "`product_name`"}, {"name": "sku", "expression": "`sku`"}, {"name": "category", "expression": "`category`"}, {"name": "_dq_failed_count", "expression": "`_dq_failed_count`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "product_id", "displayName": "Product ID"},
+            {"fieldName": "product_name", "displayName": "Name"},
+            {"fieldName": "sku", "displayName": "SKU"},
+            {"fieldName": "category", "displayName": "Category"},
+            {"fieldName": "_dq_failed_count", "displayName": "Failed Rules"},
+            {"fieldName": "_dq_row_score", "displayName": "Row DQ Score"},
+            {"fieldName": "failed_rules", "displayName": "Which Rules Failed"}
+          ]
+        },
+        "frame": {
+          "title": "Products — Failing Rows (Worst First)",
+          "showDescription": true,
+          "description": "Product records that failed DQ rules, sorted by worst DQ score"
+        }
+      }
+    },
+    {
+      "name": "w_quarantine_customers",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_quarantine_customers", "disaggregated": false, "fields": [{"name": "customer_id", "expression": "`customer_id`"}, {"name": "customer_name", "expression": "`customer_name`"}, {"name": "email", "expression": "`email`"}, {"name": "_dq_failed_count", "expression": "`_dq_failed_count`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}, {"name": "_quarantine_reason", "expression": "`_quarantine_reason`"}, {"name": "_quarantined_at", "expression": "`_quarantined_at`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "customer_id", "displayName": "Customer ID"},
+            {"fieldName": "customer_name", "displayName": "Name"},
+            {"fieldName": "email", "displayName": "Email"},
+            {"fieldName": "_dq_failed_count", "displayName": "Failed"},
+            {"fieldName": "_dq_row_score", "displayName": "Score"},
+            {"fieldName": "failed_rules", "displayName": "Failed Rules"},
+            {"fieldName": "_quarantine_reason", "displayName": "Reason"},
+            {"fieldName": "_quarantined_at", "displayName": "Quarantined At"}
+          ]
+        },
+        "frame": {
+          "title": "Quarantined Customers",
+          "showDescription": true,
+          "description": "Customer records removed by hard-enforcement rules"
+        }
+      }
+    },
+    {
+      "name": "w_quarantine_transactions",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_quarantine_transactions", "disaggregated": false, "fields": [{"name": "transaction_id", "expression": "`transaction_id`"}, {"name": "customer_id", "expression": "`customer_id`"}, {"name": "amount", "expression": "`amount`"}, {"name": "transaction_type", "expression": "`transaction_type`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}, {"name": "_quarantine_reason", "expression": "`_quarantine_reason`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "transaction_id", "displayName": "Txn ID"},
+            {"fieldName": "customer_id", "displayName": "Customer"},
+            {"fieldName": "amount", "displayName": "Amount"},
+            {"fieldName": "transaction_type", "displayName": "Type"},
+            {"fieldName": "_dq_row_score", "displayName": "Score"},
+            {"fieldName": "failed_rules", "displayName": "Failed Rules"},
+            {"fieldName": "_quarantine_reason", "displayName": "Reason"}
+          ]
+        },
+        "frame": {
+          "title": "Quarantined Transactions",
+          "showDescription": true,
+          "description": "Transaction records removed by hard-enforcement rules"
+        }
+      }
+    },
+    {
+      "name": "w_quarantine_products",
+      "queries": [{"name": "main_query", "query": {"datasetName": "ds_quarantine_products", "disaggregated": false, "fields": [{"name": "product_id", "expression": "`product_id`"}, {"name": "product_name", "expression": "`product_name`"}, {"name": "sku", "expression": "`sku`"}, {"name": "_dq_row_score", "expression": "`_dq_row_score`"}, {"name": "failed_rules", "expression": "`failed_rules`"}, {"name": "_quarantine_reason", "expression": "`_quarantine_reason`"}]}}],
+      "spec": {
+        "version": 3,
+        "widgetType": "table",
+        "encodings": {
+          "columns": [
+            {"fieldName": "product_id", "displayName": "Product ID"},
+            {"fieldName": "product_name", "displayName": "Name"},
+            {"fieldName": "sku", "displayName": "SKU"},
+            {"fieldName": "_dq_row_score", "displayName": "Score"},
+            {"fieldName": "failed_rules", "displayName": "Failed Rules"},
+            {"fieldName": "_quarantine_reason", "displayName": "Reason"}
+          ]
+        },
+        "frame": {
+          "title": "Quarantined Products",
+          "showDescription": true,
+          "description": "Product records removed by hard-enforcement rules"
+        }
+      }
+    }
+  ]
+}

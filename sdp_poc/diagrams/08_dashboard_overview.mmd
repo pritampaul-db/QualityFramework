@@ -1,0 +1,58 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "13px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}}%%
+flowchart LR
+    classDef counter fill:#E3F2FD,stroke:#1565C0,color:#0D47A1,font-size:13px
+    classDef barchart fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20,font-size:13px
+    classDef tablewidget fill:#F5F5F5,stroke:#757575,color:#333333,font-size:13px
+    classDef source fill:#ECEFF1,stroke:#90A4AE,color:#546E7A,font-size:12px
+    classDef dashboard fill:#1565C0,stroke:#0D47A1,color:#ffffff,font-size:15px,font-weight:bold
+
+    DASH["Data Quality\nCommand Center\nSDP Framework"]:::dashboard
+
+    subgraph SG1["Page 1 — Executive Overview  (8 widgets)"]
+        direction TB
+        DS1["dq_summary_by_dataset\n*_clean  |  *_quarantine"]:::source
+        W1A["Overall DQ Score\nCounter"]:::counter
+        W1B["Total Records Evaluated\nCounter"]:::counter
+        W1C["Active Rules\nCounter"]:::counter
+        W1D["Total Failures\nCounter"]:::counter
+        W1E["DQ Pass Rate by Dataset\nBar Chart"]:::barchart
+        W1F["Clean vs Quarantine Rows\nStacked Bar"]:::barchart
+        W1G["Score Distribution  Grouped Bar\nPerfect/Good/Fair/Poor/Critical"]:::barchart
+        W1H["Dataset Summary\nTable"]:::tablewidget
+    end
+
+    subgraph SG2["Page 2 — Rule Analysis  (5 widgets)"]
+        direction TB
+        DS2["dq_summary_by_rule\ndq_row_level_detail_all"]:::source
+        W2A["Pass Rate by Rule\nHorizontal Bar  worst first"]:::barchart
+        W2B["Rule Health Matrix\nTable  GREEN/AMBER/RED"]:::tablewidget
+        W2C["Failures by Rule Type\nBar Chart"]:::barchart
+        W2D["Rules by Severity\nTable"]:::tablewidget
+        W2E["Full Rule Detail\nTable"]:::tablewidget
+    end
+
+    subgraph SG3["Page 3 — Row-Level Detail  (3 widgets)"]
+        direction TB
+        DS3["*_validated tables"]:::source
+        W3A["Failing Customers\nTable"]:::tablewidget
+        W3B["Failing Transactions\nTable"]:::tablewidget
+        W3C["Failing Products\nTable"]:::tablewidget
+    end
+
+    subgraph SG4["Page 4 — Quarantine Zone  (3 widgets)"]
+        direction TB
+        DS4["*_quarantine views"]:::source
+        W4A["Quarantined Customers\nTable"]:::tablewidget
+        W4B["Quarantined Transactions\nTable"]:::tablewidget
+        W4C["Quarantined Products\nTable"]:::tablewidget
+    end
+
+    DASH --> SG1
+    DASH --> SG2
+    DASH --> SG3
+    DASH --> SG4
+
+    style SG1 fill:#F5F9FF,stroke:#1565C0,stroke-width:3px,color:#1565C0,font-weight:bold
+    style SG2 fill:#F8F5FF,stroke:#7B1FA2,stroke-width:3px,color:#7B1FA2,font-weight:bold
+    style SG3 fill:#F0F9F4,stroke:#00695C,stroke-width:3px,color:#00695C,font-weight:bold
+    style SG4 fill:#FFF5F5,stroke:#C62828,stroke-width:3px,color:#C62828,font-weight:bold

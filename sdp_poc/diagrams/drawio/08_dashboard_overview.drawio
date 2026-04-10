@@ -1,0 +1,104 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T07:30:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="Dashboard Overview" id="dashboard">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="dash" value="&lt;b&gt;Data Quality&lt;br&gt;Command Center&lt;br&gt;SDP Framework&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;strokeWidth=3;fontColor=#ffffff;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="380" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p1-group" value="Page 1 — Executive Overview (8 widgets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F9FF;strokeColor=#1565C0;strokeWidth=3;fontColor=#1565C0;fontStyle=1;fontSize=12;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="20" width="1080" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="ds1" value="&lt;i&gt;Sources: dq_summary_by_dataset&lt;br&gt;*_clean | *_quarantine&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontColor=#546E7A;fontSize=9;" vertex="1" parent="p1-group">
+          <mxGeometry x="10" y="30" width="180" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1a" value="Overall DQ Score&lt;br&gt;&lt;i&gt;Counter&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="10" y="80" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1b" value="Total Records&lt;br&gt;&lt;i&gt;Counter&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="140" y="80" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1c" value="Active Rules&lt;br&gt;&lt;i&gt;Counter&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="270" y="80" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1d" value="Total Failures&lt;br&gt;&lt;i&gt;Counter&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="400" y="80" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1e" value="DQ Pass Rate by Dataset&lt;br&gt;&lt;i&gt;Bar Chart&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="530" y="80" width="160" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1f" value="Clean vs Quarantine&lt;br&gt;&lt;i&gt;Stacked Bar&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="700" y="80" width="160" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1g" value="Score Distribution&lt;br&gt;&lt;i&gt;Grouped Bar&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="10" y="140" width="160" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w1h" value="Dataset Summary&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p1-group">
+          <mxGeometry x="180" y="140" width="160" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p2-group" value="Page 2 — Rule Analysis (5 widgets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F5FF;strokeColor=#7B1FA2;strokeWidth=3;fontColor=#7B1FA2;fontStyle=1;fontSize=12;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="240" width="1080" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="ds2" value="&lt;i&gt;Sources: dq_summary_by_rule&lt;br&gt;dq_row_level_detail_all&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontColor=#546E7A;fontSize=9;" vertex="1" parent="p2-group">
+          <mxGeometry x="10" y="30" width="180" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2a" value="Pass Rate by Rule&lt;br&gt;&lt;i&gt;Horizontal Bar&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="p2-group">
+          <mxGeometry x="10" y="80" width="180" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2b" value="Rule Health Matrix&lt;br&gt;&lt;i&gt;Table GREEN/AMBER/RED&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p2-group">
+          <mxGeometry x="200" y="80" width="200" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2c" value="Failures by Rule Type&lt;br&gt;&lt;i&gt;Bar Chart&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="p2-group">
+          <mxGeometry x="410" y="80" width="180" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2d" value="Rules by Severity&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p2-group">
+          <mxGeometry x="600" y="80" width="140" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2e" value="Full Rule Detail&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p2-group">
+          <mxGeometry x="750" y="80" width="140" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p3-group" value="Page 3 — Row-Level Detail (3 widgets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9F4;strokeColor=#00695C;strokeWidth=3;fontColor=#00695C;fontStyle=1;fontSize=12;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="400" width="1080" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="ds3" value="&lt;i&gt;Sources: *_validated tables&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontColor=#546E7A;fontSize=9;" vertex="1" parent="p3-group">
+          <mxGeometry x="10" y="30" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="w3a" value="Failing Customers&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p3-group">
+          <mxGeometry x="10" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w3b" value="Failing Transactions&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p3-group">
+          <mxGeometry x="360" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w3c" value="Failing Products&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p3-group">
+          <mxGeometry x="710" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p4-group" value="Page 4 — Quarantine Zone (3 widgets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#C62828;strokeWidth=3;fontColor=#C62828;fontStyle=1;fontSize=12;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="540" width="1080" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="ds4" value="&lt;i&gt;Sources: *_quarantine views&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontColor=#546E7A;fontSize=9;" vertex="1" parent="p4-group">
+          <mxGeometry x="10" y="30" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="w4a" value="Quarantined Customers&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p4-group">
+          <mxGeometry x="10" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w4b" value="Quarantined Transactions&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p4-group">
+          <mxGeometry x="360" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w4c" value="Quarantined Products&lt;br&gt;&lt;i&gt;Table&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontColor=#333333;fontSize=10;" vertex="1" parent="p4-group">
+          <mxGeometry x="710" y="70" width="330" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="d-p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#1565C0;strokeWidth=2;" edge="1" source="dash" target="p1-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="d-p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#7B1FA2;strokeWidth=2;" edge="1" source="dash" target="p2-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="d-p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#00695C;strokeWidth=2;" edge="1" source="dash" target="p3-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="d-p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#C62828;strokeWidth=2;" edge="1" source="dash" target="p4-group" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

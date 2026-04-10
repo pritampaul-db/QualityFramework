@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T07:30:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="DQ Struct Example" id="dq-struct">
+    <mxGraphModel dx="1400" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="src" value="&lt;b&gt;SOURCE ROW&lt;/b&gt;&lt;hr&gt;customer_id: C006&lt;br&gt;customer_name: Frank Wilson&lt;br&gt;age: &lt;b&gt;150&lt;/b&gt;&lt;br&gt;email: frank@example.com&lt;br&gt;status: active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontColor=#0D47A1;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eng" value="DQ Evaluation Engine" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#607D8B;strokeWidth=2;fontColor=#37474F;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="170" width="200" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="dq-container" value="_dq Struct Column" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;fontColor=#333333;fontStyle=1;fontSize=13;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="245" width="900" height="450" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="results-hdr" value="&lt;b&gt;_dq.results [ ] — 8 rule evaluations&lt;/b&gt;" style="text;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;rounded=1;fontColor=#333333;fontSize=11;align=center;" vertex="1" parent="dq-container">
+          <mxGeometry x="20" y="30" width="860" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="r1" value="&#10003; DQR-000001 | not_null | email | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="20" y="65" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r2" value="&#10003; DQR-000002 | not_null | customer_name | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="460" y="65" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3" value="&#10007; DQR-000003 | range | age | FAILED (150 &gt; 120)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;fontColor=#B71C1C;fontSize=10;fontStyle=1;" vertex="1" parent="dq-container">
+          <mxGeometry x="20" y="100" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r4" value="&#10003; DQR-000004 | regex | email | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="460" y="100" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r5" value="&#10003; DQR-000005 | length | phone | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="20" y="135" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r6" value="&#10003; DQR-000006 | allowed_values | status | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="460" y="135" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r7" value="&#10003; DQR-000007 | uniqueness | customer_id | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="20" y="170" width="420" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="r8" value="&#10003; DQR-000008 | ref_integrity | country_code | PASSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="dq-container">
+          <mxGeometry x="460" y="170" width="420" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="summary" value="&lt;b&gt;_dq Summary Fields&lt;/b&gt;&lt;hr&gt;passed_rules: DQR-000001, 002, 004, 005, 006, 007, 008&lt;br&gt;failed_rules: &lt;b&gt;DQR-000003&lt;/b&gt;&lt;br&gt;passed_count: 7 &amp;nbsp;|&amp;nbsp; failed_count: 1 &amp;nbsp;|&amp;nbsp; total_rules: 8&lt;br&gt;row_score: &lt;b&gt;87.5%&lt;/b&gt; &amp;nbsp;|&amp;nbsp; all_passed: &lt;b&gt;false&lt;/b&gt;&lt;br&gt;evaluated_at: 2026-04-07T06:00:00Z" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;strokeWidth=1.5;fontColor=#333333;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="dq-container">
+          <mxGeometry x="150" y="220" width="600" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="route" value="DQR-000003&#10;HARD enforcement?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontColor=#E65100;fontSize=12;" vertex="1" parent="dq-container">
+          <mxGeometry x="310" y="360" width="280" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="clean" value="&lt;b&gt;customers_clean&lt;/b&gt;&lt;br&gt;(NOT written — row excluded)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontColor=#1B5E20;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="750" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="quar" value="&lt;b&gt;customers_quarantine&lt;/b&gt;&lt;br&gt;Row written here (1 hard failure: age out of range)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;fontColor=#B71C1C;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="590" y="750" width="280" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="src-eng" value="Row ingested" style="strokeColor=#757575;strokeWidth=2;fontSize=10;fontColor=#757575;" edge="1" source="src" target="eng" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eng-dq" value="Attaches _dq struct" style="strokeColor=#757575;strokeWidth=2;fontSize=10;fontColor=#757575;" edge="1" source="eng" target="dq-container" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="route-quar" value="Yes — hard rule failed" style="strokeColor=#C62828;strokeWidth=2;fontSize=10;fontColor=#C62828;" edge="1" source="route" target="quar" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="route-clean" value="No hard failures" style="strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontColor=#2E7D32;" edge="1" source="route" target="clean" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

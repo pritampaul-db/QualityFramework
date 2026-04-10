@@ -1,0 +1,79 @@
+# =============================================================================
+# Data Quality Framework - Pipeline Configuration
+# =============================================================================
+
+framework:
+  name: "Metadata-Driven DQ Framework"
+  version: "1.0.0"
+
+# Catalog and schema configuration
+catalog:
+  name: "dq_poc"
+  schemas:
+    bronze: "bronze"
+    silver: "silver"
+    gold: "gold"
+    framework: "dq_framework"
+
+# Collibra integration settings (mock for POC)
+collibra:
+  base_url: "https://collibra-mock.example.com"
+  api_version: "2.0"
+  auth_type: "api_key"
+  # In production, use: dbutils.secrets.get(scope="dq-framework", key="collibra-api-key")
+  mock_mode: true
+  mock_rules_path: "../mock_collibra/dq_rules.json"
+  mock_mappings_path: "../mock_collibra/dq_rule_mappings.json"
+  sync_interval_hours: 6
+
+# Datasets to process
+datasets:
+  - name: "customers"
+    bronze_table: "bronze.customers"
+    silver_table: "silver.customers"
+    source_path: "../mock_data/customers.csv"
+    source_format: "csv"
+    primary_key: "customer_id"
+
+  - name: "transactions"
+    bronze_table: "bronze.transactions"
+    silver_table: "silver.transactions"
+    source_path: "../mock_data/transactions.csv"
+    source_format: "csv"
+    primary_key: "transaction_id"
+
+  - name: "products"
+    bronze_table: "bronze.products"
+    silver_table: "silver.products"
+    source_path: "../mock_data/products.csv"
+    source_format: "csv"
+    primary_key: "product_id"
+
+# Reference tables
+reference_tables:
+  - name: "dim_country"
+    source_path: "../mock_data/dim_country.csv"
+    table_name: "silver.dim_country"
+
+# Execution settings
+execution:
+  default_enforcement: "soft"
+  failure_threshold_percent: 50
+  halt_on_threshold_breach: false
+  max_quarantine_age_days: 90
+  parallel_rule_execution: false
+
+# Observability
+observability:
+  log_table: "dq_framework.dq_execution_log"
+  quarantine_table: "dq_framework.dq_quarantine"
+  score_table: "dq_framework.dq_scores"
+  enable_alerts: true
+  alert_threshold_warning: 95
+  alert_threshold_error: 80
+
+# Feedback loop
+feedback:
+  enabled: true
+  mode: "batch"  # batch or event_driven
+  push_interval_hours: 24

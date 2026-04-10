@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T07:30:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="Lineage Tracking" id="lineage">
+    <mxGraphModel dx="1800" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="brz-group" value="BRONZE LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F9FF;strokeColor=#1565C0;strokeWidth=3;fontColor=#1565C0;fontStyle=1;fontSize=14;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="460" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="b-hdr" value="_lineage struct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="brz-group">
+          <mxGeometry x="100" y="30" width="260" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="b1" value="source.file_name: 'customers.csv' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="75" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b2" value="source.file_path: '/Volumes/dq_poc/...' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="110" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="source.format: 'csv' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="145" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b4" value="bronze.table: 'customers_bronze' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="180" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b5" value="bronze.ingested_at: '2026-04-07T06:00:00Z' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="215" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b6" value="silver.table: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="250" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b7" value="silver.validated_at: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="285" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b8" value="gold.table: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="320" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b9" value="gold.processed_at: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="355" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="b10" value="pipeline.name: 'DQ Framework - SDP Pipeline' &#10003;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="brz-group">
+          <mxGeometry x="30" y="390" width="400" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="slv-group" value="SILVER LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#616161;strokeWidth=3;fontColor=#424242;fontStyle=1;fontSize=14;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="460" height="350" as="geometry"/>
+        </mxCell>
+        <mxCell id="s-hdr" value="_lineage struct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#90A4AE;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="slv-group">
+          <mxGeometry x="100" y="30" width="260" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1" value="source.* &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="75" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="bronze.* &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="110" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="silver.table: 'customers_validated' &#10003; NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#66BB6A;fontColor=#1B5E20;fontStyle=1;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="145" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="silver.validated_at: '2026-04-07T06:00:05Z' &#10003; NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#66BB6A;fontColor=#1B5E20;fontStyle=1;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="180" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="gold.table: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="215" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s6" value="gold.processed_at: NULL &#10007;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#EF9A9A;fontColor=#B71C1C;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="250" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="s7" value="pipeline.name &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="slv-group">
+          <mxGeometry x="30" y="285" width="400" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="gld-group" value="GOLD LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBF0;strokeColor=#F57F17;strokeWidth=3;fontColor=#E65100;fontStyle=1;fontSize=14;verticalAlign=top;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="100" width="460" height="290" as="geometry"/>
+        </mxCell>
+        <mxCell id="g-hdr" value="_lineage struct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FFB300;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="gld-group">
+          <mxGeometry x="100" y="30" width="260" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="g1" value="source.* &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="75" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="g2" value="bronze.* &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="110" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="g3" value="silver.* &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="145" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="g4" value="gold.table: 'gold_customer_360' &#10003; NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#66BB6A;fontColor=#1B5E20;fontStyle=1;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="180" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="g5" value="gold.processed_at: '2026-04-07T06:00:10Z' &#10003; NEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#66BB6A;fontColor=#1B5E20;fontStyle=1;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="215" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="g6" value="pipeline.name &#10003; (inherited)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;fontColor=#1B5E20;fontSize=10;" vertex="1" parent="gld-group">
+          <mxGeometry x="30" y="250" width="400" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="brz-slv" value="DLT pipeline&#10;propagates struct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=3;fontSize=11;fontColor=#757575;" edge="1" source="brz-group" target="slv-group" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="slv-gld" value="DLT pipeline&#10;enriches struct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#757575;strokeWidth=3;fontSize=11;fontColor=#757575;" edge="1" source="slv-group" target="gld-group" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

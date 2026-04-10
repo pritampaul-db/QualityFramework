@@ -1,0 +1,82 @@
+# =============================================================================
+# Spark Declarative Pipeline (DLT) - DQ Framework Configuration
+# =============================================================================
+
+framework:
+  name: "Metadata-Driven DQ Framework (SDP/DLT)"
+  version: "2.0.0"
+  engine: "spark_declarative_pipeline"
+
+# Catalog and schema configuration
+catalog:
+  name: "dq_poc"
+  schemas:
+    bronze: "bronze"
+    silver: "silver"
+    gold: "gold"
+    dq_results: "dq_sdp_results"
+
+# Collibra integration (reuses existing mock data)
+collibra:
+  mock_mode: true
+  mock_rules_path: "../mock_collibra/dq_rules.json"
+  mock_mappings_path: "../mock_collibra/dq_rule_mappings.json"
+
+# Datasets to process through DLT
+datasets:
+  - name: "customers"
+    source_dataset: "bronze.customers"
+    bronze_table: "bronze.customers"
+    silver_validated_table: "silver.customers_validated"
+    silver_clean_table: "silver.customers_clean"
+    silver_quarantine_table: "dq_sdp_results.customers_quarantine"
+    primary_key: "customer_id"
+    mapping_key: "bronze.customers"
+
+  - name: "transactions"
+    source_dataset: "bronze.transactions"
+    bronze_table: "bronze.transactions"
+    silver_validated_table: "silver.transactions_validated"
+    silver_clean_table: "silver.transactions_clean"
+    silver_quarantine_table: "dq_sdp_results.transactions_quarantine"
+    primary_key: "transaction_id"
+    mapping_key: "bronze.transactions"
+
+  - name: "products"
+    source_dataset: "bronze.products"
+    bronze_table: "bronze.products"
+    silver_validated_table: "silver.products_validated"
+    silver_clean_table: "silver.products_clean"
+    silver_quarantine_table: "dq_sdp_results.products_quarantine"
+    primary_key: "product_id"
+    mapping_key: "bronze.products"
+
+# Reference tables
+reference_tables:
+  - name: "dim_country"
+    table_name: "silver.dim_country"
+
+# DLT pipeline settings
+dlt:
+  pipeline_name: "dq_framework_sdp"
+  target_schema: "silver"
+  continuous: false
+  development: true
+  photon: true
+  channel: "current"
+
+# Row-level DQ tracking
+row_level_tracking:
+  # Each row gets these annotation columns:
+  # _dq_<rule_id>        : boolean (true = passed, false = failed)
+  # _dq_passed_rules     : array of passed rule IDs
+  # _dq_failed_rules     : array of failed rule IDs
+  # _dq_passed_count     : number of rules passed
+  # _dq_failed_count     : number of rules failed
+  # _dq_total_rules      : total rules evaluated
+  # _dq_row_score        : per-row DQ score (passed/total * 100)
+  # _dq_all_passed       : boolean (true if all rules passed)
+  # _dq_evaluated_at     : timestamp of evaluation
+  enabled: true
+  include_rule_columns: true
+  include_summary_columns: true

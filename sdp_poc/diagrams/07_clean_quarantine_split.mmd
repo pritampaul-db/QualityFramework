@@ -1,0 +1,67 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "13px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}}%%
+flowchart TD
+    INPUT["<b>customers_validated</b><br/>17 rows — each row carries _dq struct<br/>(rule_id · passed · enforcement · details)"]
+
+    subgraph CLASSIFY["Rule Classification"]
+        direction LR
+        HARD["<b>Hard Rules — Gate Keepers</b><br/>DQR-000001 · not_null · email<br/>DQR-000002 · not_null · name<br/>DQR-000003 · range · age (0-120)<br/>DQR-000004 · regex · email format<br/>DQR-000006 · allowed_values · status<br/>DQR-000007 · uniqueness · customer_id"]
+        SOFT["<b>Soft Rules — Monitors Only</b><br/>DQR-000005 · length · phone<br/>DQR-000008 · ref_integrity · country_code"]
+    end
+
+    DECISION{"ALL hard rules pass?<br/><i>(_dq.enforcement = 'hard'<br/>AND _dq.passed = false)</i>"}
+
+    subgraph CLEAN_PATH["CLEAN PATH"]
+        direction TB
+        CLEAN_NODE["<b>customers_clean</b><br/>All hard-enforcement rules passed<br/>Soft failures flagged but retained"]
+        GOLD["<b>gold_customer_360</b><br/>Production gold layer"]
+        CLEAN_NODE --> GOLD
+    end
+
+    subgraph QUAR_PATH["QUARANTINE PATH"]
+        direction TB
+        QUAR_NODE["<b>customers_quarantine</b><br/>At least one hard-enforcement rule failed<br/>Held for review and remediation"]
+        DASH["<b>Quarantine Zone Dashboard</b><br/>DQ Ops monitoring and triage"]
+        QUAR_NODE --> DASH
+    end
+
+    subgraph EXAMPLES["Row-Level Examples"]
+        direction TB
+        EX1["<b>C001</b> — all rules pass<br/>CLEAN"]
+        EX2["<b>C006</b> — age=150, fails DQR-000003 hard rule<br/>QUARANTINE"]
+        EX3["<b>C007</b> — country=XX, fails DQR-000008 soft rule only<br/>CLEAN  (soft failure does not quarantine)"]
+    end
+
+    INPUT --> CLASSIFY
+    CLASSIFY --> DECISION
+    DECISION -- "YES — no hard failures" --> CLEAN_PATH
+    DECISION -- "NO — hard failure detected" --> QUAR_PATH
+    CLEAN_PATH --> EXAMPLES
+    QUAR_PATH --> EXAMPLES
+
+    classDef inputStyle fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-size:13px
+    classDef hardStyle fill:#FFEBEE,stroke:#E53935,stroke-width:2px,color:#B71C1C,font-size:12px
+    classDef softStyle fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#E65100,font-size:12px
+    classDef decisionStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#4A148C,font-size:13px
+    classDef cleanStyle fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-size:13px
+    classDef goldStyle fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-size:12px
+    classDef quarStyle fill:#FFCDD2,stroke:#C62828,stroke-width:2px,color:#B71C1C,font-size:13px
+    classDef dashStyle fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C,font-size:12px
+    classDef exCleanStyle fill:#E8F5E9,stroke:#43A047,stroke-width:1px,color:#1B5E20,font-size:12px
+    classDef exQuarStyle fill:#FFEBEE,stroke:#E53935,stroke-width:1px,color:#B71C1C,font-size:12px
+
+    class INPUT inputStyle
+    class HARD hardStyle
+    class SOFT softStyle
+    class DECISION decisionStyle
+    class CLEAN_NODE cleanStyle
+    class GOLD goldStyle
+    class QUAR_NODE quarStyle
+    class DASH dashStyle
+    class EX1 exCleanStyle
+    class EX2 exQuarStyle
+    class EX3 exCleanStyle
+
+    style CLASSIFY fill:#F5F5F5,stroke:#BDBDBD,stroke-width:2px,color:#333333
+    style CLEAN_PATH fill:#F1F8E9,stroke:#2E7D32,stroke-width:3px,color:#2E7D32
+    style QUAR_PATH fill:#FFF5F5,stroke:#C62828,stroke-width:3px,color:#C62828
+    style EXAMPLES fill:#FAFAFA,stroke:#BDBDBD,stroke-width:2px,color:#333333

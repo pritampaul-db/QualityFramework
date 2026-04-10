@@ -1,0 +1,73 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "secondaryColor": "#F5F5F5", "tertiaryColor": "#FAFAFA", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "14px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}, "flowchart": {"curve": "basis", "padding": 20}}%%
+flowchart LR
+
+  subgraph LOAD["LOAD PHASE — SDPRuleLoader"]
+    direction TB
+    L1["dq_rules.json\n(20 rules)"]:::fileNode
+    L2["dq_rule_mappings.json\n(20 mappings)"]:::fileNode
+    L3[/"Filter: dataset + is_active\nSort: by priority"/]:::processNode
+    L4(["(rules, mappings)\nper dataset"]):::outputNode
+
+    L1 --> L3
+    L2 --> L3
+    L3 --> L4
+  end
+
+  subgraph BUILD["BUILD PHASE — RuleExpressionBuilder"]
+    direction TB
+    B1["rules + mappings"]:::inputNode
+    B2[/"Map rule_type → SQL generator"/]:::processNode
+
+    subgraph TYPES["9 Rule Types"]
+      direction LR
+      T1["not_null"]:::typeNode
+      T2["range"]:::typeNode
+      T3["regex"]:::typeNode
+      T4["uniqueness"]:::typeNode
+      T5["allowed_values"]:::typeNode
+      T6["length"]:::typeNode
+      T7["freshness"]:::typeNode
+      T8["referential_integrity"]:::typeNode
+      T9["custom_sql"]:::typeNode
+    end
+
+    B3["SQL boolean expression\nTRUE = row passes"]:::sqlNode
+
+    B4["build_expectations_dict()\n{name: sql}\nfor @dlt.expect_all\nskips: uniqueness + ref integrity"]:::out1Node
+    B5["build_all_expressions()\nfull metadata list\nfor row-level evaluation"]:::out2Node
+
+    B1 --> B2
+    B2 --> TYPES
+    TYPES --> B3
+    B3 --> B4
+    B3 --> B5
+  end
+
+  subgraph EVAL["EVALUATE PHASE — RowLevelEvaluator"]
+    direction TB
+    E1["DataFrame +\nrule expressions"]:::inputNode
+    E2[/"F.expr(sql) per rule per row\n→ boolean column"/]:::processNode
+    E3["Build _dq struct:\nresults array\npassed / failed rules\npass / fail counts\nscore   timestamp"]:::structNode
+    E4(["clean\nall hard rules pass"]):::cleanNode
+    E5(["quarantine\nany hard rule fails"]):::quarNode
+
+    E1 --> E2
+    E2 --> E3
+    E3 -->|"pass"| E4
+    E3 -->|"fail"| E5
+  end
+
+  L4 -->|"rules + mappings"| B1
+  B5 -->|"expressions"| E1
+
+  classDef fileNode fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1
+  classDef processNode fill:#1565C0,stroke:#0D47A1,stroke-width:1.5px,color:#ffffff
+  classDef outputNode fill:#BBDEFB,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1
+  classDef inputNode fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1
+  classDef typeNode fill:#E0E0E0,stroke:#9E9E9E,stroke-width:1px,color:#333333
+  classDef sqlNode fill:#FFF8E1,stroke:#F57F17,stroke-width:1.5px,color:#E65100
+  classDef out1Node fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20
+  classDef out2Node fill:#C8E6C9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20
+  classDef structNode fill:#F3E5F5,stroke:#7B1FA2,stroke-width:1.5px,color:#4A148C
+  classDef cleanNode fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+  classDef quarNode fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C

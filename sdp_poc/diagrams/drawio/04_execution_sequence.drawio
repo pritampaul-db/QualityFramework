@@ -1,0 +1,240 @@
+<mxfile host="app.diagrams.net" modified="2026-04-08T09:00:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram name="Execution Sequence" id="exec-seq">
+    <mxGraphModel dx="1800" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="user_head" value="User" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;participant=umlEntity;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=13;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="setup_head" value="00_setup" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="250" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="sdp_head" value="00_sdp_setup" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="420" y="20" width="110" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="deploy_head" value="01_deploy" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFF8E1;strokeColor=#F57F17;fontColor=#E65100;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="600" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="dlt_head" value="DLT Runtime" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFF8E1;strokeColor=#F57F17;fontColor=#E65100;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="780" y="20" width="110" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="bronze_head" value="Bronze&#xa;Pipeline" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFF3E0;strokeColor=#F57F17;fontColor=#E65100;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="960" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="silver_head" value="Silver&#xa;DQ Engine" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontColor=#4A148C;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="gold_head" value="Gold&#xa;Pipeline" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash_head" value="Lakeview&#xa;API" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFEBEE;strokeColor=#C62828;fontColor=#B71C1C;fontSize=11;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="20" width="100" height="1800" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="phase1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;opacity=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="1580" height="310" as="geometry"/>
+        </mxCell>
+        <mxCell id="phase1_lbl" value="PHASE 1 - Foundation Setup" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#1565C0;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="85" width="300" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m1" value="Run foundation setup" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;rounded=0;strokeColor=#1565C0;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="-0.2" relative="1" as="geometry">
+            <mxPoint x="130" y="120" as="sourcePoint"/>
+            <mxPoint x="290" y="120" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="CREATE CATALOG dq_poc" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;rounded=0;strokeColor=#757575;fontColor=#333333;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="160" as="sourcePoint"/>
+            <mxPoint x="300" y="180" as="targetPoint"/>
+            <Array as="points"><mxPoint x="360" y="160"/><mxPoint x="360" y="180"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2note" value="CREATE CATALOG dq_poc&#xa;CREATE SCHEMAS bronze, silver, gold" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="330" y="140" width="230" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="m3note" value="Load CSVs to Bronze Delta tables&#xa;customers(17) transactions(16) products(15)&#xa;dim_country(12)" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="330" y="200" width="250" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="m4" value="4 tables ready" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#1565C0;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="300" as="sourcePoint"/>
+            <mxPoint x="130" y="300" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="phase2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;opacity=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="400" width="1580" height="310" as="geometry"/>
+        </mxCell>
+        <mxCell id="phase2_lbl" value="PHASE 2 - SDP Rules Setup" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#2E7D32;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="405" width="300" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m5" value="Run SDP setup" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#2E7D32;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="440" as="sourcePoint"/>
+            <mxPoint x="465" y="440" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5note1" value="CREATE SCHEMA dq_sdp_results&#xa;Verify Bronze tables exist" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="500" y="460" width="210" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="m5note2" value="SDPRuleLoader: load 20 rules from JSON&#xa;RuleExpressionBuilder: preview SQL per dataset" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="500" y="520" width="280" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="m6" value="Rules previewed, ready to deploy" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#2E7D32;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="465" y="620" as="sourcePoint"/>
+            <mxPoint x="130" y="620" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="phase3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;opacity=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="720" width="1580" height="600" as="geometry"/>
+        </mxCell>
+        <mxCell id="phase3_lbl" value="PHASE 3 - DLT Pipeline Deployment" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#E65100;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="725" width="350" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m7" value="Deploy DLT pipeline" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#F57F17;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="760" as="sourcePoint"/>
+            <mxPoint x="640" y="760" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="Create pipeline via SDK" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#F57F17;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="800" as="sourcePoint"/>
+            <mxPoint x="825" y="800" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9" value="Start pipeline update" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#F57F17;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="840" as="sourcePoint"/>
+            <mxPoint x="825" y="840" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="brz_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#F57F17;strokeWidth=1;opacity=30;" vertex="1" parent="1">
+          <mxGeometry x="750" y="870" width="340" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="brz_lbl" value="Bronze Execution" style="text;html=1;align=left;fillColor=none;strokeColor=none;fontColor=#E65100;fontSize=11;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="760" y="875" width="150" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="m10" value="Execute sdp_bronze_sources.py" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#F57F17;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="900" as="sourcePoint"/>
+            <mxPoint x="1000" y="900" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10note" value="Read Bronze tables&#xa;+ stamp _lineage" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#FFF8E1;strokeColor=#F57F17;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="910" width="150" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="m11" value="4 DLT tables created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#F57F17;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="960" as="sourcePoint"/>
+            <mxPoint x="835" y="960" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="slv_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=1;opacity=30;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1000" width="520" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="slv_lbl" value="Silver Execution - DQ Engine" style="text;html=1;align=left;fillColor=none;strokeColor=none;fontColor=#4A148C;fontSize=11;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="760" y="1005" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="m12" value="Execute sdp_dq_pipeline.py" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#7B1FA2;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="1030" as="sourcePoint"/>
+            <mxPoint x="1170" y="1030" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12note" value="Load rules from JSON (import time)&#xa;Build SQL expressions per dataset&#xa;Evaluate rules per row: _dq struct&#xa;Split clean / quarantine" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="1030" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="m13" value="9 tables/views created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#7B1FA2;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="1110" as="sourcePoint"/>
+            <mxPoint x="835" y="1110" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="gld_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=1;opacity=30;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1150" width="690" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="gld_lbl" value="Gold Execution - Aggregation" style="text;html=1;align=left;fillColor=none;strokeColor=none;fontColor=#1B5E20;fontSize=11;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="760" y="1155" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="m14" value="Execute sdp_gold_pipeline.py" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#2E7D32;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="835" y="1180" as="sourcePoint"/>
+            <mxPoint x="1340" y="1180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14note" value="Explode _dq.results: row-level detail&#xa;Aggregate summaries&#xa;Build business tables" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#333333;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="1180" width="210" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="m15" value="7 tables created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#2E7D32;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1340" y="1240" as="sourcePoint"/>
+            <mxPoint x="835" y="1240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m16" value="Pipeline COMPLETED" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#F57F17;fontColor=#E65100;fontSize=10;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="825" y="1290" as="sourcePoint"/>
+            <mxPoint x="650" y="1290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="20+ tables ready in dq_poc" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#F57F17;fontColor=#E65100;fontSize=10;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="1320" as="sourcePoint"/>
+            <mxPoint x="130" y="1320" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="phase4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;opacity=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1360" width="1580" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="phase4_lbl" value="PHASE 4 - Dashboard Deployment" style="text;html=1;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#C62828;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1365" width="300" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="m18" value="Deploy dashboard" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#C62828;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1400" as="sourcePoint"/>
+            <mxPoint x="640" y="1400" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="POST create dashboard (19 datasets, 20 widgets)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#C62828;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="1440" as="sourcePoint"/>
+            <mxPoint x="1510" y="1440" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m20" value="Dashboard created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#C62828;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1510" y="1480" as="sourcePoint"/>
+            <mxPoint x="650" y="1480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21" value="POST publish dashboard" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#C62828;fontColor=#333333;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="1520" as="sourcePoint"/>
+            <mxPoint x="1510" y="1520" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22" value="Dashboard URL" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#C62828;fontColor=#B71C1C;fontSize=10;fontStyle=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="1580" as="sourcePoint"/>
+            <mxPoint x="130" y="1580" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

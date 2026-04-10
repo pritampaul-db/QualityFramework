@@ -1,0 +1,54 @@
+{
+  "name": "dq_framework_sdp_lakeflow",
+  "description": "Lakeflow job: Ingest DQ rules from Collibra JSON to Delta, then run the SDP DQ pipeline",
+  "tasks": [
+    {
+      "task_key": "01_ingest_rules",
+      "description": "Ingest DQ rules and mappings from mock_collibra JSON into Delta tables via MERGE",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Users/pritam.paul@databricks.com/Quality_Framework/sdp_poc/notebooks/05_sdp_ingest_rules.py",
+        "source": "WORKSPACE"
+      },
+      "new_cluster": {
+        "spark_version": "16.2.x-scala2.12",
+        "num_workers": 0,
+        "node_type_id": "i3.xlarge",
+        "spark_conf": {
+          "spark.master": "local[*]",
+          "spark.databricks.cluster.profile": "singleNode"
+        },
+        "custom_tags": {
+          "ResourceClass": "SingleNode"
+        },
+        "data_security_mode": "SINGLE_USER"
+      },
+      "timeout_seconds": 600,
+      "max_retries": 1
+    },
+    {
+      "task_key": "02_run_sdp_pipeline",
+      "description": "Run the SDP DQ pipeline (Bronze -> Silver DQ -> Gold) reading rules from Delta tables",
+      "depends_on": [
+        {"task_key": "01_ingest_rules"}
+      ],
+      "pipeline_task": {
+        "pipeline_id": "e96ff9fd-2c5a-44ba-8519-211252dbc9db",
+        "full_refresh": false
+      }
+    }
+  ],
+  "schedule": {
+    "quartz_cron_expression": "0 0 6 * * ?",
+    "timezone_id": "UTC",
+    "pause_status": "PAUSED"
+  },
+  "max_concurrent_runs": 1,
+  "email_notifications": {
+    "on_failure": ["pritam.paul@databricks.com"]
+  },
+  "tags": {
+    "framework": "dq_sdp",
+    "team": "data_quality",
+    "version": "2.0"
+  }
+}

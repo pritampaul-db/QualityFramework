@@ -1,0 +1,77 @@
+%%{init: {"theme": "base", "themeVariables": {"actorBkg": "#E3F2FD", "actorBorder": "#1565C0", "actorTextColor": "#0D47A1", "signalColor": "#333333", "signalTextColor": "#333333", "labelBoxBkgColor": "#F5F5F5", "labelBoxBorderColor": "#BDBDBD", "labelTextColor": "#333333", "loopTextColor": "#333333", "noteBkgColor": "#FFF8E1", "noteBorderColor": "#F57F17", "noteTextColor": "#333333", "activationBorderColor": "#1565C0", "activationBkgColor": "#E3F2FD", "sequenceNumberColor": "#ffffff", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif"}}}%%
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant S0 as 00_setup
+    participant S0S as 00_sdp_setup
+    participant S1 as 01_deploy
+    participant DLT as DLT Runtime
+    participant BP as Bronze Pipeline
+    participant SP as Silver Pipeline (DQ Engine)
+    participant GP as Gold Pipeline
+    participant DB as 04_dashboard
+    participant LV as Lakeview API
+
+    rect rgb(227, 242, 253)
+        Note over U,S0: Phase 1 — Foundation Setup
+        U->>S0: Run foundation setup
+        S0->>S0: CREATE CATALOG dq_poc
+        S0->>S0: CREATE SCHEMAS (bronze, silver, gold, dq_framework)
+        S0->>S0: Load CSVs → Bronze Delta tables
+        S0-->>U: 4 tables ready (customers, transactions, products, dim_country)
+    end
+
+    rect rgb(232, 245, 233)
+        Note over U,S0S: Phase 2 — SDP Rules Setup
+        U->>S0S: Run SDP setup
+        S0S->>S0S: CREATE SCHEMA dq_sdp_results
+        S0S->>S0S: Verify Bronze tables exist
+        S0S->>S0S: SDPRuleLoader → Load 20 rules from JSON
+        S0S->>S0S: RuleExpressionBuilder → Preview SQL expressions
+        S0S-->>U: Rules previewed, ready to deploy
+    end
+
+    rect rgb(255, 248, 225)
+        Note over U,DLT: Phase 3 — DLT Pipeline Deployment
+        U->>S1: Deploy DLT pipeline
+        S1->>DLT: Create pipeline "dq_framework_sdp" via SDK
+        S1->>DLT: Start pipeline update
+
+        rect rgb(255, 243, 224)
+            Note over DLT,BP: Bronze Execution
+            DLT->>BP: Execute sdp_bronze_sources.py
+            BP->>BP: Read Bronze tables + stamp _lineage
+            BP-->>DLT: 4 DLT tables created
+        end
+
+        rect rgb(243, 229, 245)
+            Note over DLT,SP: Silver Execution — DQ Engine
+            DLT->>SP: Execute sdp_dq_pipeline.py
+            SP->>SP: Load rules from JSON (import time)
+            SP->>SP: Build SQL expressions per dataset
+            SP->>SP: Evaluate rules per row → _dq struct
+            SP->>SP: Split clean / quarantine
+            SP-->>DLT: 9 tables/views created
+        end
+
+        rect rgb(232, 245, 233)
+            Note over DLT,GP: Gold Execution — Aggregation
+            DLT->>GP: Execute sdp_gold_pipeline.py
+            GP->>GP: Explode _dq.results → row-level detail
+            GP->>GP: Aggregate summaries
+            GP->>GP: Build business tables
+            GP-->>DLT: 7 tables created
+        end
+
+        DLT-->>S1: Pipeline COMPLETED
+        S1-->>U: 20 tables ready in dq_poc
+    end
+
+    rect rgb(255, 235, 238)
+        Note over U,LV: Phase 4 — Dashboard Deployment
+        U->>DB: Deploy dashboard
+        DB->>LV: POST create dashboard (19 datasets, 20 widgets)
+        LV-->>DB: Dashboard created
+        DB->>LV: POST publish dashboard
+        DB-->>U: Dashboard URL
+    end

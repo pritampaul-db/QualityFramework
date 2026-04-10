@@ -1,0 +1,71 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#E3F2FD", "primaryTextColor": "#333333", "primaryBorderColor": "#BDBDBD", "lineColor": "#757575", "background": "#ffffff", "fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "13px", "clusterBkg": "#FAFAFA", "clusterBorder": "#BDBDBD"}}}%%
+flowchart TD
+    SRC["<b>SOURCE ROW</b>
+    ─────────────────────────────────
+    customer_id   :  C006
+    customer_name :  Frank Wilson
+    age           :  150
+    email         :  frank@example.com
+    status        :  active"]
+
+    ENG(["DQ Evaluation Engine"])
+
+    subgraph DQ_STRUCT["_dq  Struct  Column"]
+        direction TB
+
+        subgraph RESULTS["_dq.results  [ ]  —  8 rule evaluations"]
+            direction TB
+            R1["✅  DQR-000001  |  not_null       |  email          |  PASSED"]
+            R2["✅  DQR-000002  |  not_null       |  customer_name  |  PASSED"]
+            R3["❌  DQR-000003  |  range          |  age            |  FAILED  (150 > 120)"]
+            R4["✅  DQR-000004  |  regex          |  email          |  PASSED"]
+            R5["✅  DQR-000005  |  length         |  phone          |  PASSED"]
+            R6["✅  DQR-000006  |  allowed_values |  status         |  PASSED"]
+            R7["✅  DQR-000007  |  uniqueness     |  customer_id    |  PASSED"]
+            R8["✅  DQR-000008  |  ref_integrity  |  country_code   |  PASSED"]
+        end
+
+        SUMMARY["<b>_dq Summary Fields</b>
+        ─────────────────────────────────────────
+        passed_rules   :  DQR-000001, 002, 004, 005, 006, 007, 008
+        failed_rules   :  DQR-000003
+        passed_count   :  7
+        failed_count   :  1
+        total_rules    :  8
+        row_score      :  87.5%
+        all_passed     :  false
+        evaluated_at   :  2026-04-07T06:00:00Z"]
+    end
+
+    ROUTE{"DQR-000003\nHARD enforcement?"}
+
+    CLEAN["customers_clean\n(NOT written — row excluded)"]
+
+    QUAR["customers_quarantine\nRow written here\n(1 hard failure: age out of range)"]
+
+    SRC -->|"Row ingested"| ENG
+    ENG -->|"Attaches _dq struct"| DQ_STRUCT
+    DQ_STRUCT --> ROUTE
+    ROUTE -->|"Yes — hard rule failed"| QUAR
+    ROUTE -->|"No hard failures"| CLEAN
+
+    classDef sourceStyle fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-size:13px
+    classDef engineStyle fill:#ECEFF1,stroke:#607D8B,stroke-width:2px,color:#37474F,font-size:13px
+    classDef passedStyle fill:#E8F5E9,stroke:#43A047,stroke-width:1.5px,color:#1B5E20,font-size:12px
+    classDef failedStyle fill:#FFEBEE,stroke:#E53935,stroke-width:2px,color:#B71C1C,font-size:12px,font-weight:bold
+    classDef summaryStyle fill:#F5F5F5,stroke:#9E9E9E,stroke-width:1.5px,color:#333333,font-size:12px
+    classDef routeStyle fill:#FFF8E1,stroke:#F57F17,stroke-width:2px,color:#E65100,font-size:13px
+    classDef cleanStyle fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-size:13px
+    classDef quarStyle fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C,font-size:13px,font-weight:bold
+
+    class SRC sourceStyle
+    class ENG engineStyle
+    class R1,R2,R4,R5,R6,R7,R8 passedStyle
+    class R3 failedStyle
+    class SUMMARY summaryStyle
+    class ROUTE routeStyle
+    class CLEAN cleanStyle
+    class QUAR quarStyle
+
+    style DQ_STRUCT fill:#FAFAFA,stroke:#BDBDBD,stroke-width:2px,color:#333333
+    style RESULTS fill:#F5F5F5,stroke:#9E9E9E,stroke-width:1px,color:#333333

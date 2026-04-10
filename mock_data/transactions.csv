@@ -1,0 +1,16 @@
+transaction_id,customer_id,amount,transaction_type,transaction_date,quantity,currency,merchant
+T001,C001,250.00,purchase,2026-03-30,2,USD,Amazon
+T002,C002,1500.50,purchase,2026-03-30,1,GBP,Harrods
+T003,C003,,refund,2026-03-29,1,CAD,BestBuy
+T004,C001,75.25,transfer,2026-03-31,1,USD,PayPal
+T005,C999,320.00,purchase,2026-03-28,3,USD,Walmart
+T006,C005,45.99,invalid_type,2026-03-30,1,EUR,Zara
+T007,C002,-100.00,purchase,2026-03-27,2,GBP,Tesco
+T008,C004,2000000.00,purchase,2026-03-31,1,USD,Tesla
+T009,C006,89.99,withdrawal,2026-03-30,1,EUR,ATM
+T010,C001,150.00,deposit,,5,USD,BankTransfer
+T011,C007,499.99,purchase,2026-03-31,0,USD,Apple
+T012,C008,35.50,purchase,2026-03-30,-2,USD,Netflix
+T013,C002,1250.00,purchase,2026-01-15,1,GBP,JohnLewis
+T014,C010,67.80,purchase,2026-03-31,15000,JPY,Uniqlo
+T015,C012,890.00,purchase,2026-03-30,3,CNY,Alibaba
